@@ -11,5 +11,6 @@ public class AutoMapperProfile: Profile
         CreateMap<MessageInputDto, Message>();
         CreateMap<Message, MessageReturnDto>();
         CreateMap<Message, MessageDto>();
+        CreateMap<UpdateMessageDto, Message>();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketing.DataAccessLayer.Context;
 
@@ -11,9 +12,11 @@ using Ticketing.DataAccessLayer.Context;
 namespace Ticketing.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721103627_makeRatingPropertyNullable")]
+    partial class makeRatingPropertyNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,13 +64,16 @@ namespace Ticketing.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentMessageId");
 
-                    b.HasIndex("SenderId");
-
                     b.HasIndex("TicketId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Messages");
                 });
@@ -166,23 +172,23 @@ namespace Ticketing.Migrations
                         .HasForeignKey("ParentMessageId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Ticketing.DataAccessLayer.Entities.User", "Sender")
-                        .WithMany("Messages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Ticketing.DataAccessLayer.Entities.Ticket", "Ticket")
                         .WithMany("Messages")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ticketing.DataAccessLayer.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ParentMessage");
 
-                    b.Navigation("Sender");
-
                     b.Navigation("Ticket");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.SupporterRating", b =>
@@ -236,8 +242,6 @@ namespace Ticketing.Migrations
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.User", b =>
                 {
                     b.Navigation("CreatedTickets");
-
-                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

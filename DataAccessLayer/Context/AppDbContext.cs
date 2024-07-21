@@ -28,6 +28,11 @@ public class AppDbContext: DbContext
             .HasForeignKey(m => m.ParentMessageId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Message>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.Messages)
+            .HasForeignKey(m => m.SenderId);
+
         // One-to-Many: User (Creator) -> Tickets
         modelBuilder.Entity<Ticket>()
             .HasOne(t => t.Creator)

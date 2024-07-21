@@ -20,4 +20,10 @@ public class MessageController: ControllerBase
     {
         return Ok(await _messageService.CreateMessage(messageInputDto));
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetMessageById(int id)
+    {
+        return Ok(await _messageService.GetMessageById(id));
+    }
 }

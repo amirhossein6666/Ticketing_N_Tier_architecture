@@ -24,6 +24,7 @@ public class MessageService: IMessageService
     public async Task<MessageReturnDto> CreateMessage(MessageInputDto messageInputDto)
     {
         var message = _mapper.Map<Message>(messageInputDto);
+        message.SendDate = DateTime.Now;
         try
         {
             var returnedMessage = await _messageRepository.CreateMessage(message);

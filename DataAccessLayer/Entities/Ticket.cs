@@ -11,7 +11,7 @@ public class Ticket
     public int CreatorId { get; set; }
     public User Creator { get; set; }
 
-    public Rating Rating { get; set; }
+    public Rating? Rating { get; set; }
 
     public ICollection<User> Supporters { get; set; }
 

@@ -16,7 +16,6 @@ public class MessageDto
     public int TicketId { get; set; }
     public Ticket Ticket { get; set; }
 
-    //self referencing for handling reply functionality
     public int? ParentMessageId { get; set; }
     public Message ParentMessage { get; set; }
     public ICollection<Message> Replies { get; set; }

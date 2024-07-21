@@ -1,5 +1,6 @@
 using AutoMapper;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.MessageDtos;
 
@@ -20,6 +21,17 @@ public class MessageService: IMessageService
 
     public async Task<MessageReturnDto> CreateMessage(MessageInputDto messageInputDto)
     {
+        var message = _mapper.Map<Message>(messageInputDto);
+        try
+        {
+            var returnedMessage = await _messageRepository.CreateMessage(message);
+            return _mapper.Map<MessageReturnDto>(returnedMessage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<MessageDto> GetMessageById(int id)

@@ -1,4 +1,4 @@
-namespace Ticketing.Dtos;
+namespace Ticketing.Dtos.MessageDtos;
 
 public class MessageInputDto
 {

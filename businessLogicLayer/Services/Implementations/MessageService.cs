@@ -56,5 +56,19 @@ public class MessageService: IMessageService
 
     public async Task<MessageReturnDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto)
     {
+        var message = await _messageRepository.GetMessageById(id);
+        if (message is null)
+            throw new NotFoundException($"Message with id {id} not found.");
+        _mapper.Map(updateMessageDto, message);
+        try
+        {
+            var returnedMessage = await _messageRepository.UpdateMessage(message);
+            return _mapper.Map<MessageReturnDto>(returnedMessage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

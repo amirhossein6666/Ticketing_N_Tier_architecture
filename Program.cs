@@ -1,4 +1,4 @@
-using Ticketing.businessLogicLayer.Tools;
+using Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 

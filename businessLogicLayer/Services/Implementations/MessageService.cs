@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.businessLogicLayer.Tools.CustomExceptions;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.MessageDtos;
@@ -45,6 +46,7 @@ public class MessageService: IMessageService
 
     public async Task<ICollection<MessageDto>> GetMessagesByTicketId(int ticketId)
     {
+        return _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByTicketId(ticketId));
     }
 
     public async Task<ICollection<MessageDto>> GetMessagesByUserId(int userId)

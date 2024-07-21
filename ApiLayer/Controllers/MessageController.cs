@@ -38,4 +38,10 @@ public class MessageController: ControllerBase
     {
         return Ok(await _messageService.GetMessagesByUserId(userId));
     }
+
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> UpdateMessage(int id, UpdateMessageDto updateMessageDto)
+    {
+        return Ok(await _messageService.UpdateMessage(id, updateMessageDto));
+    }
 }

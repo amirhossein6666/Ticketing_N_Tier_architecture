@@ -1,10 +1,16 @@
+using AutoMapper;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.MessageDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
 public class MessageService: IMessageService
 {
+    private readonly IMessageRepository _messageRepository;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
+
 
     public async Task<MessageReturnDto> CreateMessage(MessageInputDto messageInputDto)
     {

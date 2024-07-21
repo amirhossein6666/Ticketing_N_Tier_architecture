@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
@@ -36,6 +37,10 @@ public class MessageService: IMessageService
 
     public async Task<MessageDto> GetMessageById(int id)
     {
+        var message = await _messageRepository.GetMessageById(id);
+        if (message is null)
+            throw new NotFoundException($"Message with id {id} not found.");
+        return _mapper.Map<MessageDto>(message);
     }
 
     public async Task<ICollection<MessageDto>> GetMessagesByTicketId(int ticketId)

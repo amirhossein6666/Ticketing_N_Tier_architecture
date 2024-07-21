@@ -8,4 +8,5 @@ public interface IMessageService
     public Task<MessageDto> GetMessageById(int id);
     public Task<ICollection<MessageDto>> GetMessagesByTicketId(int ticketId);
     public Task<ICollection<MessageDto>> GetMessagesByUserId(int userId);
+    public Task<MessageReturnDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto);
 }

@@ -9,5 +9,7 @@ public class AutoMapperProfile: Profile
     public AutoMapperProfile()
     {
         CreateMap<MessageInputDto, Message>();
+        CreateMap<Message, MessageReturnDto>();
+        CreateMap<Message, MessageDto>();
     }
 }

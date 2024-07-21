@@ -26,4 +26,10 @@ public class MessageController: ControllerBase
     {
         return Ok(await _messageService.GetMessageById(id));
     }
+
+    [HttpGet("GetMessagesByTicketId/{ticketId:int}")]
+    public async Task<IActionResult> GetMessagesByTicketId(int ticketId)
+    {
+        return Ok(await _messageService.GetMessagesByTicketId(ticketId));
+    }
 }

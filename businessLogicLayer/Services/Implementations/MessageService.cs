@@ -11,6 +11,12 @@ public class MessageService: IMessageService
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
 
+    public MessageService(IMessageRepository messageRepository, IMapper mapper, IConfiguration config)
+    {
+        _messageRepository = messageRepository;
+        _mapper = mapper;
+        _config = config;
+    }
 
     public async Task<MessageReturnDto> CreateMessage(MessageInputDto messageInputDto)
     {

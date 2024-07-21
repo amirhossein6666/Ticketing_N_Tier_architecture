@@ -36,6 +36,6 @@ public class MessageController: ControllerBase
     [HttpGet("GetMessagesByUserId/{userId:int}")]
     public async Task<IActionResult> GetMessagesByUserId(int userId)
     {
-        return Ok(await _messageService.GetMessagesByUserId(userid));
+        return Ok(await _messageService.GetMessagesByUserId(userId));
     }
 }

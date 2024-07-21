@@ -51,6 +51,7 @@ public class MessageService: IMessageService
 
     public async Task<ICollection<MessageDto>> GetMessagesByUserId(int userId)
     {
+        return _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByUserId(userId));
     }
 
     public async Task<MessageReturnDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto)

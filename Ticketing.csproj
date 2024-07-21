@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <Folder Include="ApiLayer\" />
-      <Folder Include="businessLogicLayer\" />
       <Folder Include="Dtos\" />
     </ItemGroup>
 

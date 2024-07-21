@@ -1,10 +1,12 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Ticketing.businessLogicLayer.Services.Implementations;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
+using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Implementations;
 using Ticketing.DataAccessLayer.Interfaces;
 
@@ -45,6 +47,10 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 
 //configure mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

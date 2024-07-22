@@ -40,10 +40,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 builder.Services.AddTransient<IMessageService, MessageService>();
 
+// Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+// Optional: Configure other JSON options globally if needed
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 //configure mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

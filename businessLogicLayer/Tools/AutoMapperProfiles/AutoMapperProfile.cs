@@ -10,7 +10,11 @@ public class AutoMapperProfile: Profile
     {
         CreateMap<MessageInputDto, Message>();
         CreateMap<Message, MessageReturnDto>();
-        CreateMap<Message, MessageDto>();
         CreateMap<UpdateMessageDto, Message>();
+        CreateMap<Message, MessageDto>()
+            .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.Sender.Username))
+            .ForMember(dest => dest.ParentMessageBody, opt => opt.MapFrom(src => src.ParentMessage.Body))
+            .ForMember(dest => dest.ParentMessageSendDate, opt => opt.MapFrom(src => src.ParentMessage.SendDate))
+            .ForMember(dest => dest.ParentMessageSenderUsername, opt => opt.MapFrom(src => src.ParentMessage.Sender.Username));
     }
 }

@@ -13,6 +13,8 @@ public class Ticket
 
     public Rating? Rating { get; set; }
 
+    public Status Status { get; set; }
+
     public ICollection<User> Supporters { get; set; }
 
     public ICollection<Message> Messages { get; set; }

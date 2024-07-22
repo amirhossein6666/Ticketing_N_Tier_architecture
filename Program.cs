@@ -39,10 +39,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 builder.Services.AddTransient<IMessageService, MessageService>();
-
+builder.Services.AddControllers();
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+// builder.Services.AddControllers().AddJsonOptions(x =>
+//     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 //configure mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

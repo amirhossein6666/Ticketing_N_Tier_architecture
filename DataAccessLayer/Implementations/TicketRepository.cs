@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
@@ -20,9 +21,13 @@ public class TicketRepository: ITicketRepository
         return ticket;
     }
 
-    public async Task<Ticket> GetTicketById(int id)
+    public async Task<Ticket?> GetTicketById(int id)
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Tickets
+            .Include(t => t.Messages)
+            .Include(t => t.Creator)
+            .Include(t => t.Supporters)
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public async Task<ICollection<Ticket>> GetAllTickets()

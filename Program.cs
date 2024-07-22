@@ -44,10 +44,6 @@ builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-// Optional: Configure other JSON options globally if needed
-builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-
 //configure mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

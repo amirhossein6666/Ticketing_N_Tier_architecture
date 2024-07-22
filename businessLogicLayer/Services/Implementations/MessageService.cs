@@ -5,6 +5,7 @@ using Ticketing.businessLogicLayer.Tools.CustomExceptions;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.MessageDtos;
+using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
@@ -37,12 +38,23 @@ public class MessageService: IMessageService
         }
     }
 
-    public async Task<MessageDto> GetMessageById(int id)
+    public async Task<MessageResponseDto> GetMessageById(int id)
     {
         var message = await _messageRepository.GetMessageById(id);
         if (message is null)
-            throw new NotFoundException($"Message with id {id} not found.");
-        return _mapper.Map<MessageDto>(message);
+            return new MessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "message Not Found"
+            };
+        return new MessageResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Ok",
+            Data = _mapper.Map<MessageDto>(message)
+        };
     }
 
     public async Task<ICollection<MessageDto>> GetMessagesByTicketId(int ticketId)

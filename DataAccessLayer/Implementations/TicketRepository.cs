@@ -32,7 +32,7 @@ public class TicketRepository: ITicketRepository
 
     public async Task<ICollection<Ticket>> GetAllTickets()
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Tickets.ToListAsync();
     }
 
     public async Task<ICollection<Ticket>> GetTicketsByCreatorId(int creatorId)

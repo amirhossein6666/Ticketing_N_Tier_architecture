@@ -1,4 +1,5 @@
 using Ticketing.DataAccessLayer.Entities;
+using Ticketing.Dtos.BaseDtos;
 
 namespace Ticketing.Dtos.MessageDtos;
 

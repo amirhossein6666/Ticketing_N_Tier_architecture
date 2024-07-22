@@ -23,7 +23,8 @@ public class MessageRepository: IMessageRepository
 
     public async Task<Message?> GetMessageById(int id)
     {
-        return await _appDbContext.Messages.Include(m => m.Sender)
+        return await _appDbContext.Messages
+            .Include(m => m.Sender)
             .Include(m => m.Ticket)
             .Include(m => m.ParentMessage)
             .Include(m => m.Replies)

@@ -30,4 +30,9 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.GetAllTickets());
     }
+    [HttpGet("GetTicketsByCreatorId/creatorId")]
+    public async Task<IActionResult> GetTicketsByCreatorId(int creatorId)
+    {
+        return Ok(await _ticketService.GetTicketsByCreatorId(creatorId));
+    }
 }

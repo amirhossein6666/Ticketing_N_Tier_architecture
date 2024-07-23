@@ -39,8 +39,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 builder.Services.AddTransient<IMessageService, MessageService>();
-builder.Services.AddControllers();
+builder.Services.AddTransient<ITicketRepository, TicketRepository>();
+builder.Services.AddTransient<ITicketService, TicketService>();
 
+builder.Services.AddControllers();
 // Add services to the container.
 // builder.Services.AddControllers().AddJsonOptions(x =>
 //     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);

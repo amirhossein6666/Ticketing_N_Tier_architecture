@@ -9,7 +9,7 @@ using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
-public class MessageService: IMessageService
+public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
     private readonly IMapper _mapper;
@@ -22,14 +22,14 @@ public class MessageService: IMessageService
         _config = config;
     }
 
-    public async Task<MessageReturnResponseDto> CreateMessage(MessageInputDto messageInputDto)
+    public async Task<CreateUpdateMessageResponseDto> CreateMessage(MessageInputDto messageInputDto)
     {
         var message = _mapper.Map<Message>(messageInputDto);
         message.SendDate = DateTime.Now;
         try
         {
             var returnedMessage = await _messageRepository.CreateMessage(message);
-            return new MessageReturnResponseDto()
+            return new CreateUpdateMessageResponseDto()
             {
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status201Created,
@@ -39,7 +39,7 @@ public class MessageService: IMessageService
         }
         catch (Exception e)
         {
-            return new MessageReturnResponseDto()
+            return new CreateUpdateMessageResponseDto()
             {
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest,
@@ -67,9 +67,16 @@ public class MessageService: IMessageService
         };
     }
 
-    public async Task<ICollection<MessageDto>> GetMessagesByTicketId(int ticketId)
+    public async Task<MessageListResponseDto> GetMessagesByTicketId(int ticketId)
     {
-        return _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByTicketId(ticketId));
+        var messageDtos = _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByTicketId(ticketId));
+        return new MessageListResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = $"{messageDtos.Count} messages found",
+            Data = messageDtos
+        };
     }
 
     public async Task<ICollection<MessageDto>> GetMessagesByUserId(int userId)

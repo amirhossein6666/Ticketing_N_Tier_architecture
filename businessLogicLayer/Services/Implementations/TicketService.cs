@@ -68,4 +68,35 @@ public class TicketService: ITicketService
             Data = _mapper.Map<TicketDto>(ticket)
         };
     }
+
+    public async Task<TicketListResponseDto> GetAllTickets()
+    {
+        var tickets = await _ticketRepository.GetAllTickets();
+        var ticketDtos = _mapper.Map<ICollection<TicketListDto>>(tickets);
+        return new TicketListResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = tickets.Count == 0 ? StatusCodes.Status404NotFound : StatusCodes.Status200OK,
+            Message = tickets.Count == 0 ? "no tickets found" : $"{tickets.Count} tickets found",
+            Data = ticketDtos
+        };
+    }
+
+    public async Task<TicketListResponseDto> GetTicketsByCreatorId(int creatorId)
+    {
+        var tickets = await _ticketRepository.GetTicketsByCreatorId(creatorId);
+        var ticketDtos = _mapper.Map<ICollection<TicketListDto>>(tickets);
+        return new TicketListResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = tickets.Count == 0 ? StatusCodes.Status404NotFound : StatusCodes.Status200OK,
+            Message = tickets.Count == 0 ? "no tickets found" : $"{tickets.Count} tickets found",
+            Data = ticketDtos
+        };
+    }
+
+    public async Task<CreateUpdateTicketResponseDto> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto)
+    {
+        throw new NotImplementedException();
+    }
 }

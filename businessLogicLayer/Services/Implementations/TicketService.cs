@@ -97,6 +97,35 @@ public class TicketService: ITicketService
 
     public async Task<CreateUpdateTicketResponseDto> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto)
     {
-        throw new NotImplementedException();
+        var ticket = await _ticketRepository.GetTicketById(id);
+        if (ticket is null)
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {id} Not found"
+            };
+        _mapper.Map(updateTicketInputDto, ticket);
+        try
+        {
+            var returnedTicket = await _ticketRepository.UpdateTicket(ticket);
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"ticket with id {id} updated",
+                Data = _mapper.Map<CreateUpdateTicketDto>(returnedTicket),
+            };
+        }
+        catch (Exception e)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+
     }
 }

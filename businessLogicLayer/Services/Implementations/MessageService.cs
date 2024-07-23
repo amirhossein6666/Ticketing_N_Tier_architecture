@@ -88,7 +88,8 @@ public class MessageService : IMessageService
             StatusCode = StatusCodes.Status200OK,
             Message = $"{messageDtos.Count} messages found",
             Data = messageDtos
-        };    }
+        };
+    }
 
     public async Task<MessageReturnDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto)
     {

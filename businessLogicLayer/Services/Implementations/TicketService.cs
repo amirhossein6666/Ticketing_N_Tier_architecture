@@ -1,5 +1,7 @@
 using AutoMapper;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.Dtos.ResponseDtos.TicketResponseDtos;
+using Ticketing.Dtos.TicketDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
@@ -12,5 +14,10 @@ public class TicketService: ITicketService
     {
         _ticketService = ticketService;
         _mapper = mapper;
+    }
+
+    public async Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto)
+    {
+
     }
 }

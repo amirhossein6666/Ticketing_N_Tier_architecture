@@ -22,19 +22,29 @@ public class MessageService: IMessageService
         _config = config;
     }
 
-    public async Task<MessageReturnDto> CreateMessage(MessageInputDto messageInputDto)
+    public async Task<MessageReturnResponseDto> CreateMessage(MessageInputDto messageInputDto)
     {
         var message = _mapper.Map<Message>(messageInputDto);
         message.SendDate = DateTime.Now;
         try
         {
             var returnedMessage = await _messageRepository.CreateMessage(message);
-            return _mapper.Map<MessageReturnDto>(returnedMessage);
+            return new MessageReturnResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status201Created,
+                Message = $"message with id {returnedMessage.Id} Created",
+                Data = _mapper.Map<MessageReturnDto>(returnedMessage),
+            };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            return new MessageReturnResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString(),
+            };
         }
     }
 

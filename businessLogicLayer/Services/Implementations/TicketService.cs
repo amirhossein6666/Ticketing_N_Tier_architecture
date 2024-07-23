@@ -3,6 +3,8 @@ using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
+using Ticketing.Dtos.MessageDtos;
+using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 using Ticketing.Dtos.ResponseDtos.TicketResponseDtos;
 using Ticketing.Dtos.TicketDtos;
 
@@ -44,5 +46,26 @@ public class TicketService: ITicketService
             };
         }
 
+    }
+
+    public async Task<TicketResponseDto> GetTicketById(int id)
+    {
+        var ticket = await _ticketRepository.GetTicketById(id);
+        if (ticket is null)
+        {
+            return new TicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "ticket Not Found"
+            };
+        }
+        return new TicketResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Ok",
+            Data = _mapper.Map<TicketDto>(ticket)
+        };
     }
 }

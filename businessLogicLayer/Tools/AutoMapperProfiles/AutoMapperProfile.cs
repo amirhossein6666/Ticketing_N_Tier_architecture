@@ -9,7 +9,7 @@ public class AutoMapperProfile: Profile
     public AutoMapperProfile()
     {
         CreateMap<MessageInputDto, Message>();
-        CreateMap<Message, MessageReturnDto>();
+        CreateMap<Message, CreateUpdateMessageDto>();
         CreateMap<UpdateMessageDto, Message>();
         CreateMap<Message, MessageDto>()
             .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.Sender.Username))

@@ -34,7 +34,7 @@ public class MessageService : IMessageService
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status201Created,
                 Message = $"message with id {returnedMessage.Id} Created",
-                Data = _mapper.Map<MessageReturnDto>(returnedMessage),
+                Data = _mapper.Map<CreateUpdateMessageDto>(returnedMessage),
             };
         }
         catch (Exception e)
@@ -111,7 +111,7 @@ public class MessageService : IMessageService
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status200OK,
                 Message = $"message with id {id} updated",
-                Data = _mapper.Map<MessageReturnDto>(returnedMessage),
+                Data = _mapper.Map<CreateUpdateMessageDto>(returnedMessage),
             };
         }
         catch (Exception e)

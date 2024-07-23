@@ -3,7 +3,7 @@ using Ticketing.Dtos.MessageDtos;
 
 namespace Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 
-public class CreateUpdateMessageResponseDto: BaseResponseDto<MessageReturnDto>
+public class CreateUpdateMessageResponseDto: BaseResponseDto<CreateUpdateMessageDto>
 {
 
 }

@@ -1,6 +1,6 @@
 namespace Ticketing.Dtos.MessageDtos;
 
-public class MessageReturnDto
+public class CreateUpdateMessageDto
 {
     public int Id { get; set; }
 

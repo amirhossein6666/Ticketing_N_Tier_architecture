@@ -24,4 +24,10 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.GetTicketById(id));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllTickets()
+    {
+        return Ok(await _ticketService.GetAllTickets());
+    }
 }

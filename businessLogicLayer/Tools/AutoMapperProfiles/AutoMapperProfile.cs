@@ -1,6 +1,7 @@
 using AutoMapper;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.Dtos.MessageDtos;
+using Ticketing.Dtos.TicketDtos;
 
 namespace Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
 
@@ -16,5 +17,7 @@ public class AutoMapperProfile: Profile
             .ForMember(dest => dest.ParentMessageBody, opt => opt.MapFrom(src => src.ParentMessage.Body))
             .ForMember(dest => dest.ParentMessageSendDate, opt => opt.MapFrom(src => src.ParentMessage.SendDate))
             .ForMember(dest => dest.ParentMessageSenderUsername, opt => opt.MapFrom(src => src.ParentMessage.Sender.Username));
+
+        CreateMap<TicketInputDto, Ticket>();
     }
 }

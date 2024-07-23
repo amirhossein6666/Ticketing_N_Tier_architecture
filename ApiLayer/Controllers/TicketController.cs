@@ -18,4 +18,10 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.CreateTicket(ticketInputDto));
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetTicketById(int id)
+    {
+        return Ok(await _ticketService.GetTicketById(id));
+    }
 }

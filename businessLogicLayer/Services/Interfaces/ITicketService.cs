@@ -6,4 +6,5 @@ namespace Ticketing.businessLogicLayer.Services.Interfaces;
 public interface ITicketService
 {
     public Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto);
+    public Task<TicketResponseDto> GetTicketById(int id);
 }

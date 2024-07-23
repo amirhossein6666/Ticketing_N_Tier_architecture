@@ -41,6 +41,8 @@ public class TicketRepository: ITicketRepository
 
     public async Task<Ticket> UpdateTicket(Ticket updatedTicket)
     {
-        throw new NotImplementedException();
+        _appDbContext.Entry(updatedTicket).State = EntityState.Modified;
+        await _appDbContext.SaveChangesAsync();
+        return updatedTicket;
     }
 }

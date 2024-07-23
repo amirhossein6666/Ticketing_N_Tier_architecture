@@ -79,10 +79,16 @@ public class MessageService : IMessageService
         };
     }
 
-    public async Task<ICollection<MessageDto>> GetMessagesByUserId(int userId)
+    public async Task<MessageListResponseDto> GetMessagesByUserId(int userId)
     {
-        return _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByUserId(userId));
-    }
+        var messageDtos = _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByUserId(userId));
+        return new MessageListResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = $"{messageDtos.Count} messages found",
+            Data = messageDtos
+        };    }
 
     public async Task<MessageReturnDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto)
     {

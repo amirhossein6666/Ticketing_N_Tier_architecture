@@ -69,7 +69,8 @@ public class MessageService : IMessageService
 
     public async Task<MessageListResponseDto> GetMessagesByTicketId(int ticketId)
     {
-        var messageDtos = _mapper.Map<ICollection<MessageDto>>(await _messageRepository.GetMessagesByTicketId(ticketId));
+        var messages = await _messageRepository.GetMessagesByTicketId(ticketId);
+        var messageDtos = _mapper.Map<ICollection<MessageDto>>(messages);
         return new MessageListResponseDto()
         {
             IsSuccess = true,

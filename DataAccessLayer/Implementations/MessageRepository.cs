@@ -33,12 +33,16 @@ public class MessageRepository: IMessageRepository
 
     public async Task<ICollection<Message>> GetMessagesByTicketId(int ticketId)
     {
-        return await _appDbContext.Messages.Where(m => m.TicketId == ticketId).ToListAsync();
+        return await _appDbContext.Messages
+            .Include(m => m.Sender)
+            .Where(m => m.TicketId == ticketId).ToListAsync();
     }
 
     public async Task<ICollection<Message>> GetMessagesByUserId(int userId)
     {
-        return await _appDbContext.Messages.Where(m => m.SenderId == userId).ToListAsync();
+        return await _appDbContext.Messages
+            .Include(m => m.Sender)
+            .Where(m => m.SenderId == userId).ToListAsync();
     }
 
     public async Task<Message> UpdateMessage(Message message)

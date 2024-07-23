@@ -73,8 +73,8 @@ public class MessageService : IMessageService
         return new MessageListResponseDto()
         {
             IsSuccess = true,
-            StatusCode = StatusCodes.Status200OK,
-            Message = $"{messageDtos.Count} messages found",
+            StatusCode = messageDtos.Count == 0? StatusCodes.Status404NotFound: StatusCodes.Status200OK,
+            Message = messageDtos.Count == 0? "No Messages Found": $"{messageDtos.Count} messages found",
             Data = messageDtos
         };
     }

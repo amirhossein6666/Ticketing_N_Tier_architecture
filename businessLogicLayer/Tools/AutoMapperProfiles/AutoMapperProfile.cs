@@ -19,5 +19,6 @@ public class AutoMapperProfile: Profile
             .ForMember(dest => dest.ParentMessageSenderUsername, opt => opt.MapFrom(src => src.ParentMessage.Sender.Username));
 
         CreateMap<TicketInputDto, Ticket>();
+        CreateMap<Ticket, CreateUpdateTicketDto>();
     }
 }

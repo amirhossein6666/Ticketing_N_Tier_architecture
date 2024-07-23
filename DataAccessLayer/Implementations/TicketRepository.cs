@@ -5,7 +5,7 @@ using Ticketing.DataAccessLayer.Interfaces;
 
 namespace Ticketing.DataAccessLayer.Implementations;
 
-public class TicketRepository: ITicketRepository
+public class TicketRepository : ITicketRepository
 {
     private readonly AppDbContext _appDbContext;
 
@@ -25,6 +25,7 @@ public class TicketRepository: ITicketRepository
     {
         return await _appDbContext.Tickets
             .Include(t => t.Messages)
+            .ThenInclude(m => m.Sender)
             .Include(t => t.Creator)
             .FirstOrDefaultAsync(t => t.Id == id);
     }

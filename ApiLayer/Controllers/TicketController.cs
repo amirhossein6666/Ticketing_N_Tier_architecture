@@ -35,7 +35,7 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.GetTicketsByCreatorId(creatorId));
     }
-    [HttpPut("{id:int}")]
+    [HttpPatch("{id:int}")]
     public async Task<IActionResult> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto)
     {
         return Ok(await _ticketService.UpdateTicket(id, updateTicketInputDto));

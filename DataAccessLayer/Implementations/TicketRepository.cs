@@ -26,7 +26,6 @@ public class TicketRepository: ITicketRepository
         return await _appDbContext.Tickets
             .Include(t => t.Messages)
             .Include(t => t.Creator)
-            .Include(t => t.Supporters)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
@@ -37,7 +36,7 @@ public class TicketRepository: ITicketRepository
 
     public async Task<ICollection<Ticket>> GetTicketsByCreatorId(int creatorId)
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Tickets.Where(t => t.CreatorId == creatorId).ToListAsync();
     }
 
     public async Task<Ticket> UpdateTicket(Ticket updatedTicket)

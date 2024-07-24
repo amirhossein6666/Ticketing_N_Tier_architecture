@@ -23,4 +23,6 @@ public class Message
     public int? ParentMessageId { get; set; }
     public Message ParentMessage { get; set; }
     public ICollection<Message> Replies { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

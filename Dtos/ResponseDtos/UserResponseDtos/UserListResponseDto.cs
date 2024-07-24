@@ -3,7 +3,7 @@ using Ticketing.Dtos.UserDtos;
 
 namespace Ticketing.Dtos.ResponseDtos.UserResponseDtos;
 
-public class UserListResponseDto: BaseResponseDto<UserListDto>
+public class UserListResponseDto: BaseResponseDto<ICollection<UserListDto>>
 {
 
 }

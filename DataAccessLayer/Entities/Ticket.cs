@@ -18,4 +18,6 @@ public class Ticket
     public ICollection<User> Supporters { get; set; }
 
     public ICollection<Message> Messages { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 }

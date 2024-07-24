@@ -41,7 +41,7 @@ public class UserRepository: IUserRepository
 
     public async Task<ICollection<User>> GetUsersByRole(Role role)
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Users.Where(u => u.Role == role).ToListAsync();
     }
 
     public async Task<User> UpdateUser(User user)

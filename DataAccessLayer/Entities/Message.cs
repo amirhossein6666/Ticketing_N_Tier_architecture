@@ -24,5 +24,5 @@ public class Message
     public Message ParentMessage { get; set; }
     public ICollection<Message> Replies { get; set; }
 
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; } = false;
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.ResponseDtos.UserResponseDtos;
 using Ticketing.Dtos.UserDtos;
@@ -17,14 +18,29 @@ public class UserService: IUserService
         _mapper = mapper;
     }
 
-    public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto)
     {
-        throw new NotImplementedException();
+        var user = _mapper.Map<User>(createUpdateUserInputDto);
+        try
+        {
+            var returnedUser = await _userRepository.CreateUser(user);
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status201Created,
+                Message = $"user with id {returnedUser.Id} created ",
+                Data = _mapper.Map<CreateUpdateUserDto>(returnedUser)
+            };
+        }
+        catch (Exception e)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString(),
+            };
+        }
     }
 
     public async Task<UserResponseDto> GetUserById(int id)
@@ -46,4 +62,10 @@ public class UserService: IUserService
     {
         throw new NotImplementedException();
     }
+
+    public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)
+    {
+        throw new NotImplementedException();
+    }
+
 }

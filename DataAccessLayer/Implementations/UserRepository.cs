@@ -44,8 +44,10 @@ public class UserRepository: IUserRepository
         return await _appDbContext.Users.Where(u => u.Role == role).ToListAsync();
     }
 
-    public async Task<User> UpdateUser(User user)
+    public async Task<User> UpdateUser(User updatedUser)
     {
-        throw new NotImplementedException();
+        _appDbContext.Entry(updatedUser).State = EntityState.Modified;
+        await _appDbContext.SaveChangesAsync();
+        return updatedUser;
     }
 }

@@ -9,5 +9,5 @@ public interface IUserRepository
     public Task<User?> GetUserById(int id);
     public Task<User?> GetUserByUsername(string username);
     public Task<ICollection<User>> GetUsersByRole(Role role);
-    public Task<User> UpdateUser(User user);
+    public Task<User> UpdateUser(User updatedUser);
 }

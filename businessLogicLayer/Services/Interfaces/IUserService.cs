@@ -7,4 +7,6 @@ public interface IUserService
 {
     public Task<CreateUpdateUserResponseDto> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto);
     public Task<UserResponseDto> GetUserById(int id);
+    public Task<UserResponseDto> GetUserByUsername(string username);
+    public Task<UserListResponseDto> GetUsersByRole(string username);
 }

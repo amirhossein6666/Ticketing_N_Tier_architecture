@@ -45,7 +45,21 @@ public class UserService: IUserService
 
     public async Task<UserResponseDto> GetUserById(int id)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserById(id);
+        if (user is null)
+            return new UserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "user not found"
+            };
+        return new UserResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Ok",
+            Data = _mapper.Map<UserDto>(user),
+        };
     }
 
     public async Task<UserResponseDto> GetUserByUsername(string username)

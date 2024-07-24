@@ -128,7 +128,28 @@ public class UserService: IUserService
 
     public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserByUsername(loginInputDto.Username);
+        if (user is null)
+            return new LoginResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "user with this username not found"
+            };
+        if (!user.password.Equals(loginInputDto.password))
+            return new LoginResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Message = "username and password doesn't match"
+            };
+        return new LoginResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Ok",
+            Data = GenerateToken(loginInputDto.Username)
+        };
     }
 
 }

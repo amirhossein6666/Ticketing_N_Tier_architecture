@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
@@ -23,7 +24,10 @@ public class UserRepository: IUserRepository
 
     public async Task<User?> GetUserById(int id)
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Users
+            .Include(u => u.CreatedTickets)
+            .Include(u => u.AnsweredTicket)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<User?> GetUserByUsername(string username)

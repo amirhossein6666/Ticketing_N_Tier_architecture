@@ -93,9 +93,37 @@ public class UserService: IUserService
         };
     }
 
-    public async Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto)
+    public async Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto, int id)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserById(id);
+        if (user is null)
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "user not found"
+            };
+        _mapper.Map(createUpdateUserInputDto, user);
+        try
+        {
+            var returnedUser = await _userRepository.UpdateUser(user);
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"user with id {returnedUser.Id} updated",
+                Data = _mapper.Map<CreateUpdateUserDto>(returnedUser),
+            };
+        }
+        catch (Exception e)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
     }
 
     public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)

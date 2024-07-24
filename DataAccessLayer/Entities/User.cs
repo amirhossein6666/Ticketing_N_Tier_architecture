@@ -21,4 +21,6 @@ public class User
     public ICollection<Ticket> AnsweredTicket { get; set; }
 
     public ICollection<Message> Messages { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
+using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.ResponseDtos.UserResponseDtos;
 using Ticketing.Dtos.UserDtos;
@@ -80,9 +81,16 @@ public class UserService: IUserService
             Data = _mapper.Map<UserDto>(user),
         };    }
 
-    public async Task<UserListResponseDto> GetUsersByRole(string username)
+    public async Task<UserListResponseDto> GetUsersByRole(Role role)
     {
-        throw new NotImplementedException();
+        var userDtos = _mapper.Map<ICollection<UserListDto>>(await _userRepository.GetUsersByRole(role));
+        return new UserListResponseDto()
+        {
+            IsSuccess = true,
+            StatusCode = userDtos.Count == 0 ? StatusCodes.Status404NotFound : StatusCodes.Status200OK,
+            Message = userDtos.Count == 0 ? "No users found" : $"{userDtos.Count} user found",
+            Data = userDtos,
+        };
     }
 
     public async Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto)

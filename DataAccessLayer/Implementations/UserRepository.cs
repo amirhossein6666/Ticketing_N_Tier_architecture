@@ -16,7 +16,9 @@ public class UserRepository: IUserRepository
 
     public async Task<User> CreateUser(User user)
     {
-        throw new NotImplementedException();
+        _appDbContext.Users.Add(user);
+        await _appDbContext.SaveChangesAsync();
+        return user;
     }
 
     public async Task<User?> GetUserById(int id)

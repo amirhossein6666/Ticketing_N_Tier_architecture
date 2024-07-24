@@ -32,7 +32,11 @@ public class UserRepository: IUserRepository
 
     public async Task<User?> GetUserByUsername(string username)
     {
-        throw new NotImplementedException();
+        return await _appDbContext.Users
+            .Include(u => u.CreatedTickets)
+            .Include(u => u.AnsweredTicket)
+            .FirstOrDefaultAsync(u => u.Username == username);
+
     }
 
     public async Task<ICollection<User>> GetUsersByRole(Role role)

@@ -1,4 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
@@ -12,11 +16,13 @@ public class UserService: IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
 
     public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration config)
     {
         _userRepository = userRepository;
         _mapper = mapper;
+        _config = config;
     }
 
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto)
@@ -151,5 +157,27 @@ public class UserService: IUserService
             Data = GenerateToken(loginInputDto.Username)
         };
     }
+    private JwtSecurityToken GenerateToken(string username)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, username),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        return  new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Issuer"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: credentials);
+
+        // return new JwtSecurityTokenHandler().WriteToken(token);
+
+    }
 
 }
+

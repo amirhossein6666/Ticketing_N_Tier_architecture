@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Ticketing.DataAccessLayer.Enums;
 
 namespace Ticketing.DataAccessLayer.Entities;
-
+[Index(nameof(Username), IsUnique = true)]
 public class User
 {
     [Key]

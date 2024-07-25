@@ -25,9 +25,9 @@ public class UserService: IUserService
         _config = config;
     }
 
-    public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto)
+    public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUserInputDto createUserInputDto)
     {
-        var user = _mapper.Map<User>(createUpdateUserInputDto);
+        var user = _mapper.Map<User>(createUserInputDto);
         try
         {
             var returnedUser = await _userRepository.CreateUser(user);
@@ -107,7 +107,7 @@ public class UserService: IUserService
 
     }
 
-    public async Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto, int id)
+    public async Task<CreateUpdateUserResponseDto> UpdateUser(UpdateUserInputDto updateUserInputDto, int id)
     {
         var user = await _userRepository.GetUserById(id);
         if (user is null)
@@ -117,7 +117,7 @@ public class UserService: IUserService
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = "user not found"
             };
-        _mapper.Map(createUpdateUserInputDto, user);
+        _mapper.Map(updateUserInputDto, user);
         try
         {
             var returnedUser = await _userRepository.UpdateUser(user);

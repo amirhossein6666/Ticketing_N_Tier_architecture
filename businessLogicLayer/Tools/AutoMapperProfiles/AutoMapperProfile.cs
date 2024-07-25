@@ -29,6 +29,9 @@ public class AutoMapperProfile: Profile
 
         CreateMap<CreateUpdateUserInputDto, User>();
         CreateMap<User, CreateUpdateUserDto>();
-        CreateMap<User, UserDto>();
+        CreateMap<User, UserDto>()
+            .ForMember(dest => dest.CreatedTickets, opt => opt.MapFrom(src => src.CreatedTickets))
+            .ForMember(dest => dest.AnsweredTicket, opt => opt.MapFrom(src => src.AnsweredTicket));
+
     }
 }

@@ -15,9 +15,9 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     [HttpPost]
-    public async Task<IActionResult> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto)
+    public async Task<IActionResult> CreateUser(CreateUserInputDto createUserInputDto)
     {
-        return Ok(await _userService.CreateUser(createUpdateUserInputDto));
+        return Ok(await _userService.CreateUser(createUserInputDto));
     }
 
     [HttpGet("{id:int}")]
@@ -38,8 +38,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    public async Task<IActionResult> UpdateUser(int id,  CreateUpdateUserInputDto createUpdateUserInputDto)
+    public async Task<IActionResult> UpdateUser(int id,  UpdateUserInputDto updateUserInputDto)
     {
-        return Ok(await _userService.UpdateUser(createUpdateUserInputDto, id));
+        return Ok(await _userService.UpdateUser(updateUserInputDto, id));
     }
 }

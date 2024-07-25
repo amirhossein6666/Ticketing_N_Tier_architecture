@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Ticketing.businessLogicLayer.Services.Implementations;
 using Ticketing.businessLogicLayer.Services.Interfaces;
@@ -41,6 +42,8 @@ builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddTransient<ITicketRepository, TicketRepository>();
 builder.Services.AddTransient<ITicketService, TicketService>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddControllers();
 // Add services to the container.

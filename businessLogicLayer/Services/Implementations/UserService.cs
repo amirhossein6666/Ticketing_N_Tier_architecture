@@ -89,24 +89,22 @@ public class UserService: IUserService
 
     public async Task<UserListResponseDto> GetUsersByRole(string role)
     {
-        if (Enum.TryParse<Role>(role, true, out var roleEnum))
-        {
-            var userDtos = _mapper.Map<ICollection<UserListDto>>(await _userRepository.GetUsersByRole(roleEnum));
+        if (!Enum.TryParse<Role>(role, true, out var roleEnum))
             return new UserListResponseDto()
             {
-                IsSuccess = true,
-                StatusCode = userDtos.Count == 0 ? StatusCodes.Status404NotFound : StatusCodes.Status200OK,
-                Message = userDtos.Count == 0 ? "No users found" : $"{userDtos.Count} user found",
-                Data = userDtos,
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"{role} is not a valid Value for Role enum"
             };
-        }
-
+        var userDtos = _mapper.Map<ICollection<UserListDto>>(await _userRepository.GetUsersByRole(roleEnum));
         return new UserListResponseDto()
         {
-            IsSuccess = false,
-            StatusCode = StatusCodes.Status400BadRequest,
-            Message = $"{role} is not a valid Value for Role enum"
+            IsSuccess = true,
+            StatusCode = userDtos.Count == 0 ? StatusCodes.Status404NotFound : StatusCodes.Status200OK,
+            Message = userDtos.Count == 0 ? "No users found" : $"{userDtos.Count} user found",
+            Data = userDtos,
         };
+
     }
 
     public async Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto, int id)

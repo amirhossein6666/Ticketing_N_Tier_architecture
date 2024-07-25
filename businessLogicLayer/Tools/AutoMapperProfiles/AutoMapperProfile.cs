@@ -27,7 +27,8 @@ public class AutoMapperProfile: Profile
             .ForMember(dest => dest.CreatorUsername, opt => opt.MapFrom(src => src.Creator.Username))
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
-        CreateMap<CreateUpdateUserInputDto, User>();
+        CreateMap<CreateUserInputDto, User>();
+        CreateMap<UpdateUserInputDto, User>();
         CreateMap<User, CreateUpdateUserDto>();
         CreateMap<User, UserListDto>();
         CreateMap<User, UserDto>()

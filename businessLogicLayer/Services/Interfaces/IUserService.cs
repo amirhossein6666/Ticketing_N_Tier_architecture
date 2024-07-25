@@ -10,6 +10,6 @@ public interface IUserService
     public Task<CreateUpdateUserResponseDto> CreateUser(CreateUpdateUserInputDto createUpdateUserInputDto);
     public Task<UserResponseDto> GetUserById(int id);
     public Task<UserResponseDto> GetUserByUsername(string username);
-    public Task<UserListResponseDto> GetUsersByRole(Role  role);
+    public Task<UserListResponseDto> GetUsersByRole(string  role);
     public Task<CreateUpdateUserResponseDto> UpdateUser(CreateUpdateUserInputDto createUpdateUserInputDto, int id);
 }

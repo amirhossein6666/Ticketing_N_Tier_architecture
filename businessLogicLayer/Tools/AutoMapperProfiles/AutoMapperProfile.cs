@@ -29,5 +29,6 @@ public class AutoMapperProfile: Profile
 
         CreateMap<CreateUpdateUserInputDto, User>();
         CreateMap<User, CreateUpdateUserDto>();
+        CreateMap<User, UserDto>();
     }
 }

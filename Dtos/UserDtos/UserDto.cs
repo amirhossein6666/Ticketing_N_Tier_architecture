@@ -1,5 +1,6 @@
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
+using Ticketing.Dtos.TicketDtos;
 
 namespace Ticketing.Dtos.UserDtos;
 
@@ -9,8 +10,8 @@ public class UserDto
 
     public Role Role { get; set; }
 
-    public ICollection<Ticket> CreatedTickets { get; set; }
+    public ICollection<TicketListDto> CreatedTickets { get; set; }
 
-    public ICollection<Ticket> AnsweredTicket { get; set; }
+    public ICollection<TicketListDto> AnsweredTicket { get; set; }
 
 }

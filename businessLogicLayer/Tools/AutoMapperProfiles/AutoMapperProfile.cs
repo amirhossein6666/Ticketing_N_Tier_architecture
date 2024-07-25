@@ -2,6 +2,7 @@ using AutoMapper;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.Dtos.MessageDtos;
 using Ticketing.Dtos.TicketDtos;
+using Ticketing.Dtos.UserDtos;
 
 namespace Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
 
@@ -26,5 +27,7 @@ public class AutoMapperProfile: Profile
             .ForMember(dest => dest.CreatorUsername, opt => opt.MapFrom(src => src.Creator.Username))
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
+        CreateMap<CreateUpdateUserInputDto, User>();
+        CreateMap<User, CreateUpdateUserDto>();
     }
 }

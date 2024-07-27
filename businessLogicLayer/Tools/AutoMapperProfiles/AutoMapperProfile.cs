@@ -21,7 +21,8 @@ public class AutoMapperProfile: Profile
 
         CreateMap<TicketInputDto, Ticket>();
         CreateMap<Ticket, CreateUpdateTicketDto>();
-        CreateMap<UpdateTicketInputDto, Ticket>();
+        CreateMap<UpdateTicketInputDto, Ticket>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<Ticket, TicketListDto>();
         CreateMap<Ticket, TicketDto>()
             .ForMember(dest => dest.CreatorUsername, opt => opt.MapFrom(src => src.Creator.Username))

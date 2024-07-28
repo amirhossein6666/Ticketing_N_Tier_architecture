@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -176,7 +177,7 @@ public class UserService: IUserService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        return  new JwtSecurityToken(
+        return new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Issuer"],
             claims: claims,
@@ -184,8 +185,5 @@ public class UserService: IUserService
             signingCredentials: credentials);
 
         // return new JwtSecurityTokenHandler().WriteToken(token);
-
     }
-
 }
-

@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -13,7 +12,7 @@ using Ticketing.Dtos.UserDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
-public class UserService: IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
@@ -85,8 +84,9 @@ public class UserService: IUserService
             IsSuccess = true,
             StatusCode = StatusCodes.Status200OK,
             Message = "Ok",
-            Data = _mapper.Map<UserDto>(user),
-        };    }
+            Data = _mapper.Map<UserDto>(user)
+        };
+    }
 
     public async Task<UserListResponseDto> GetUsersByRole(string role)
     {
@@ -105,7 +105,6 @@ public class UserService: IUserService
             Message = userDtos.Count == 0 ? "No users found" : $"{userDtos.Count} user found",
             Data = userDtos,
         };
-
     }
 
     public async Task<CreateUpdateUserResponseDto> UpdateUser(UpdateUserInputDto updateUserInputDto, int id)
@@ -141,6 +140,38 @@ public class UserService: IUserService
         }
     }
 
+    public async Task<DeleteUserResponseDto> DeleteUser(int id)
+    {
+        var user = await _userRepository.GetUserById(id);
+        if (user is null)
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "user not found"
+            };
+        user.IsDeleted = true;
+        try
+        {
+            await _userRepository.UpdateUser(user);
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"user with it {id} removed"
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+    }
+
     public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)
     {
         var user = await _userRepository.GetUserByUsername(loginInputDto.Username);
@@ -166,7 +197,8 @@ public class UserService: IUserService
             Data = GenerateToken(loginInputDto.Username)
         };
     }
-    private JwtSecurityToken GenerateToken(string username)
+
+    private string GenerateToken(string username)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -177,13 +209,13 @@ public class UserService: IUserService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        return new JwtSecurityToken(
+         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Issuer"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: credentials);
 
-        // return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

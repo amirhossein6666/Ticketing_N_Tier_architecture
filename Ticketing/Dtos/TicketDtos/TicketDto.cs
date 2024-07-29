@@ -13,5 +13,5 @@ public class TicketDto
 
     public Status Status { get; set; }
 
-    public ICollection<MessageDto> Messages { get; set; }
+    public ICollection<MessagesOfTicketDto> Messages { get; set; }
 }

@@ -11,7 +11,7 @@ public class Message
 
     public string Body { get; set; }
 
-    public DateTime SendDate { get; set; }
+    public DateTime SendDate { get; set; } = DateTime.Now;
 
     public int SenderId { get; set; }
     public User Sender { get; set; }

@@ -42,4 +42,16 @@ public class UserController : ControllerBase
     {
         return Ok(await _userService.UpdateUser(updateUserInputDto, id));
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        return Ok(await _userService.DeleteUser(id));
+    }
+
+    [HttpPost("/login")]
+    public async Task<IActionResult> Login(LoginInputDto loginInputDto)
+    {
+        return Ok(await _userService.Login(loginInputDto));
+    }
 }

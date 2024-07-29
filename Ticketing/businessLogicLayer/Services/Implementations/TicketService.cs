@@ -128,4 +128,47 @@ public class TicketService: ITicketService
         }
 
     }
+
+    public async Task<SetTicketRatingResponseDto> SetTicketRating(int ticketId, string rating)
+    {
+        if (!Enum.TryParse<Rating>(rating, true, out var ratingEnum))
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"the {rating} is not a valid value for Rating Enum"
+            };
+        }
+        var ticket = await _ticketRepository.GetTicketById(ticketId);
+        if (ticket is null)
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {ticketId} Not found"
+            };
+        ticket.Rating = ratingEnum;
+        try
+        {
+            var returnedTicket = await _ticketRepository.UpdateTicket(ticket);
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"ticket with id {ticketId} updated",
+                Data = _mapper.Map<SetTicketRatingDto>(returnedTicket),
+            };
+        }
+        catch (Exception e)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+
+    }
 }

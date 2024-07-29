@@ -128,4 +128,19 @@ public class TicketService: ITicketService
         }
 
     }
+
+    public async Task<SetTicketRatingResponseDto> SetTicketRating(string rating)
+    {
+        if (!Enum.TryParse<Rating>(rating, true, out var ratingEnum))
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"the {rating} is not a valid value for Rating Enum"
+            };
+        }
+
+
+    }
 }

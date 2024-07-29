@@ -48,4 +48,10 @@ public class UserController : ControllerBase
     {
         return Ok(await _userService.DeleteUser(id));
     }
+
+    [HttpPost("/login")]
+    public async Task<IActionResult> Login(LoginInputDto loginInputDto)
+    {
+        return Ok(await _userService.Login(loginInputDto));
+    }
 }

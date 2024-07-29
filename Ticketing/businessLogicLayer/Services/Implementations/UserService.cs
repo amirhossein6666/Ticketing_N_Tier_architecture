@@ -199,7 +199,7 @@ public class UserService : IUserService
         };
     }
 
-    private JwtSecurityToken GenerateToken(string username)
+    private string GenerateToken(string username)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -210,13 +210,13 @@ public class UserService : IUserService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        return new JwtSecurityToken(
+         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Issuer"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: credentials);
 
-        // return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

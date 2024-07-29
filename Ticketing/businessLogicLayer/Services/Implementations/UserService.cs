@@ -13,7 +13,7 @@ using Ticketing.Dtos.UserDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
-public class UserService: IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
@@ -85,8 +85,9 @@ public class UserService: IUserService
             IsSuccess = true,
             StatusCode = StatusCodes.Status200OK,
             Message = "Ok",
-            Data = _mapper.Map<UserDto>(user),
-        };    }
+            Data = _mapper.Map<UserDto>(user)
+        };
+    }
 
     public async Task<UserListResponseDto> GetUsersByRole(string role)
     {
@@ -105,7 +106,6 @@ public class UserService: IUserService
             Message = userDtos.Count == 0 ? "No users found" : $"{userDtos.Count} user found",
             Data = userDtos,
         };
-
     }
 
     public async Task<CreateUpdateUserResponseDto> UpdateUser(UpdateUserInputDto updateUserInputDto, int id)
@@ -166,6 +166,7 @@ public class UserService: IUserService
             Data = GenerateToken(loginInputDto.Username)
         };
     }
+
     private JwtSecurityToken GenerateToken(string username)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

@@ -9,6 +9,6 @@ public class MessageDto
     public DateTime SendDate { get; set; }
     public string SenderUsername { get; set; }
     public string ParentMessageBody{ get; set; }
-    public DateTime ParentMessageSendDate{ get; set; }
+    public DateTime? ParentMessageSendDate { get; set; } = null;
     public string ParentMessageSenderUsername{ get; set; }
 }

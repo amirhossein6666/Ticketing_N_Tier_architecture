@@ -8,7 +8,7 @@ using Ticketing.DataAccessLayer.Context;
 
 #nullable disable
 
-namespace Ticketing.Migrations
+namespace Ticketing.DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

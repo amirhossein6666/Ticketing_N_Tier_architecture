@@ -9,11 +9,11 @@ using Ticketing.DataAccessLayer.Context;
 
 #nullable disable
 
-namespace Ticketing.Migrations
+namespace Ticketing.DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240725061137_UniqueUsername")]
-    partial class UniqueUsername
+    [Migration("20240729100713_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -40,4 +40,10 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.UpdateTicket(id, updateTicketInputDto));
     }
+
+    [HttpPost("SetRating/{id:int}")]
+    public async Task<IActionResult> SetTicketRating(int id, string rating)
+    {
+        return Ok(await _ticketService.SetTicketRating(id, rating));
+    }
 }

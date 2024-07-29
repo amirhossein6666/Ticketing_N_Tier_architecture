@@ -141,6 +141,38 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<DeleteUserResponseDto> DeleteUser(int id)
+    {
+        var user = await _userRepository.GetUserById(id);
+        if (user is null)
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "user not found"
+            };
+        user.IsDeleted = true;
+        try
+        {
+            await _userRepository.UpdateUser(user);
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"user with it {id} removed"
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+    }
+
     public async Task<LoginResponseDto> Login(LoginInputDto loginInputDto)
     {
         var user = await _userRepository.GetUserByUsername(loginInputDto.Username);

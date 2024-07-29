@@ -18,7 +18,9 @@ public class AutoMapperProfile: Profile
             .ForMember(dest => dest.ParentMessageBody, opt => opt.MapFrom(src => src.ParentMessage.Body))
             .ForMember(dest => dest.ParentMessageSendDate, opt => opt.MapFrom(src => src.ParentMessage.SendDate))
             .ForMember(dest => dest.ParentMessageSenderUsername, opt => opt.MapFrom(src => src.ParentMessage.Sender.Username));
-
+        CreateMap<Message, MessagesOfTicketDto>()
+            .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.Sender.Username))
+            .ForMember(dest => dest.ParentMessage, opt => opt.MapFrom(src => src.ParentMessage));
         CreateMap<TicketInputDto, Ticket>();
         CreateMap<Ticket, CreateUpdateTicketDto>();
         CreateMap<UpdateTicketInputDto, Ticket>()

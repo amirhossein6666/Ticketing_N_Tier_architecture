@@ -27,7 +27,7 @@ public class UserService : IUserService
 
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUserInputDto createUserInputDto)
     {
-        if (createUserInputDto.Role != Role.Supporter || createUserInputDto.Role != Role.Client)
+        if (createUserInputDto.Role != Role.Supporter && createUserInputDto.Role != Role.Client)
         {
             return new CreateUpdateUserResponseDto()
             {

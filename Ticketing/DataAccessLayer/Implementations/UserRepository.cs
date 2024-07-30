@@ -27,7 +27,7 @@ public class UserRepository: IUserRepository
         return await _appDbContext.Users
             .Include(u => u.CreatedTickets)
             .Include(u => u.AnsweredTicket)
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
     }
 
     public async Task<User?> GetUserByUsername(string username)
@@ -35,13 +35,13 @@ public class UserRepository: IUserRepository
         return await _appDbContext.Users
             .Include(u => u.CreatedTickets)
             .Include(u => u.AnsweredTicket)
-            .FirstOrDefaultAsync(u => u.Username == username);
+            .FirstOrDefaultAsync(u => u.Username == username && !u.IsDeleted);
 
     }
 
     public async Task<ICollection<User>> GetUsersByRole(Role role)
     {
-        return await _appDbContext.Users.Where(u => u.Role == role).ToListAsync();
+        return await _appDbContext.Users.Where(u => u.Role == role && !u.IsDeleted).ToListAsync();
     }
 
     public async Task<User> UpdateUser(User updatedUser)

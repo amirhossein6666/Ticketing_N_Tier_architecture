@@ -149,7 +149,25 @@ public class TicketService: ITicketService
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"ticket with id {ticketId} Not found"
             };
+        if (ticket.Rating.HasValue)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"the rating for ticket with id {ticketId} already set"
+            };
+        }
 
+        if (ticket.Status != Status.Open)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"ticket with id {ticketId} is not finished to set rating"
+            };
+        }
         switch (rating)
         {
             case 1:

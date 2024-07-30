@@ -122,4 +122,36 @@ public class MessageService : IMessageService
             };
         }
     }
+
+    public async Task<DeleteMessageResponseDto> DeleteMessage(int id)
+    {
+        var message = await _messageRepository.GetMessageById(id);
+        if (message is null)
+            return new DeleteMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"message with id {id} Not found"
+            };
+        message.IsDeleted = true;
+        try
+        {
+            var returnedMessage = await _messageRepository.UpdateMessage(message);
+            return new DeleteMessageResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"message with id {id} removed",
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+    }
 }

@@ -44,4 +44,11 @@ public class MessageController: ControllerBase
     {
         return Ok(await _messageService.UpdateMessage(id, updateMessageDto));
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleleMessage(int id)
+    {
+        return Ok(await _messageService.DeleteMessage(id));
+    }
+
 }

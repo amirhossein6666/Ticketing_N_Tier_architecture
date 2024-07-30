@@ -27,6 +27,15 @@ public class UserService : IUserService
 
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUserInputDto createUserInputDto)
     {
+        if (createUserInputDto.Role != Role.Supporter || createUserInputDto.Role != Role.Client)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "invalid value for Role enum"
+            };
+        }
         var user = _mapper.Map<User>(createUserInputDto);
         try
         {

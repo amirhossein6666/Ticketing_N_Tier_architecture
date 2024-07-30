@@ -169,6 +169,37 @@ public class TicketService: ITicketService
                 Message = e.ToString()
             };
         }
+    }
 
+    public async Task<DeleteTicketResponseDto> DeleteTicket(int id)
+    {
+        var ticket = await _ticketRepository.GetTicketById(id);
+        if (ticket is null)
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {id} Not found"
+            };
+        ticket.IsDeleted = true;
+        try
+        {
+            await _ticketRepository.UpdateTicket(ticket);
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"ticket with id {id} removed",
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
     }
 }

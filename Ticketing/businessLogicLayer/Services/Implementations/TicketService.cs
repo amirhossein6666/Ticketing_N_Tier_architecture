@@ -3,8 +3,6 @@ using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
-using Ticketing.Dtos.MessageDtos;
-using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 using Ticketing.Dtos.ResponseDtos.TicketResponseDtos;
 using Ticketing.Dtos.TicketDtos;
 
@@ -13,16 +11,28 @@ namespace Ticketing.businessLogicLayer.Services.Implementations;
 public class TicketService: ITicketService
 {
     private readonly ITicketRepository _ticketRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public TicketService(ITicketRepository ticketRepository, IMapper mapper)
+    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository)
     {
         _ticketRepository = ticketRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     public async Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto)
     {
+        var creator = await _userRepository.GetUserById(ticketInputDto.CreatorId);
+        if (creator is null)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"user with id {ticketInputDto.CreatorId} not found",
+            };
+        }
         var ticket = _mapper.Map<Ticket>(ticketInputDto);
         ticket.Status = Status.Unread;
         try

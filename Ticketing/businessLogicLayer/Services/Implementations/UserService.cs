@@ -99,13 +99,23 @@ public class UserService : IUserService
 
     public async Task<UserListResponseDto> GetUsersByRole(string role)
     {
-        if (!Enum.TryParse<Role>(role, true, out var roleEnum))
-            return new UserListResponseDto()
-            {
-                IsSuccess = false,
-                StatusCode = StatusCodes.Status400BadRequest,
-                Message = $"{role} is not a valid Value for Role enum"
-            };
+        Role roleEnum;
+        switch (role)
+        {
+            case "Supporter":
+                roleEnum = Role.Supporter;
+                break;
+            case "Client":
+                roleEnum = Role.Client;
+                break;
+            default:
+                return new UserListResponseDto()
+                {
+                    IsSuccess = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Invalid value for Role enum"
+                };
+        }
         var userDtos = _mapper.Map<ICollection<UserListDto>>(await _userRepository.GetUsersByRole(roleEnum));
         return new UserListResponseDto()
         {

@@ -27,17 +27,17 @@ public class TicketRepository : ITicketRepository
             .Include(t => t.Messages)
             .ThenInclude(m => m.Sender)
             .Include(t => t.Creator)
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
     }
 
     public async Task<ICollection<Ticket>> GetAllTickets()
     {
-        return await _appDbContext.Tickets.ToListAsync();
+        return await _appDbContext.Tickets.Where(t => !t.IsDeleted).ToListAsync();
     }
 
     public async Task<ICollection<Ticket>> GetTicketsByCreatorId(int creatorId)
     {
-        return await _appDbContext.Tickets.Where(t => t.CreatorId == creatorId).ToListAsync();
+        return await _appDbContext.Tickets.Where(t => t.CreatorId == creatorId && !t.IsDeleted).ToListAsync();
     }
 
     public async Task<Ticket> UpdateTicket(Ticket updatedTicket)

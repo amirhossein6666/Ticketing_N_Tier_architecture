@@ -25,17 +25,33 @@ public class UserRepository: IUserRepository
     public async Task<User?> GetUserById(int id)
     {
         return await _appDbContext.Users
-            .Include(u => u.CreatedTickets)
-            .Include(u => u.AnsweredTicket)
-            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .Select(u => new User
+            {
+                Id = u.Id,
+                Username = u.Username,
+                password = u.password,
+                Role = u.Role,
+                CreatedTickets = u.CreatedTickets.Where(t => !t.IsDeleted).ToList(),
+                AnsweredTicket = u.AnsweredTicket,
+            })
+            .FirstOrDefaultAsync();
     }
 
     public async Task<User?> GetUserByUsername(string username)
     {
         return await _appDbContext.Users
-            .Include(u => u.CreatedTickets)
-            .Include(u => u.AnsweredTicket)
-            .FirstOrDefaultAsync(u => u.Username == username && !u.IsDeleted);
+            .Where(u => u.Username == username && !u.IsDeleted)
+            .Select(u => new User
+            {
+                Id = u.Id,
+                Username = u.Username,
+                password = u.password,
+                Role = u.Role,
+                CreatedTickets = u.CreatedTickets.Where(t => !t.IsDeleted).ToList(),
+                AnsweredTicket = u.AnsweredTicket,
+            })
+            .FirstOrDefaultAsync();
 
     }
 

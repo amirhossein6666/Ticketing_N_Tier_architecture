@@ -27,6 +27,15 @@ public class UserService : IUserService
 
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUserInputDto createUserInputDto)
     {
+        if (createUserInputDto.Role != Role.Supporter && createUserInputDto.Role != Role.Client)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "invalid value for Role enum"
+            };
+        }
         var user = _mapper.Map<User>(createUserInputDto);
         try
         {
@@ -90,13 +99,23 @@ public class UserService : IUserService
 
     public async Task<UserListResponseDto> GetUsersByRole(string role)
     {
-        if (!Enum.TryParse<Role>(role, true, out var roleEnum))
-            return new UserListResponseDto()
-            {
-                IsSuccess = false,
-                StatusCode = StatusCodes.Status400BadRequest,
-                Message = $"{role} is not a valid Value for Role enum"
-            };
+        Role roleEnum;
+        switch (role)
+        {
+            case "Supporter":
+                roleEnum = Role.Supporter;
+                break;
+            case "Client":
+                roleEnum = Role.Client;
+                break;
+            default:
+                return new UserListResponseDto()
+                {
+                    IsSuccess = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Invalid value for Role enum"
+                };
+        }
         var userDtos = _mapper.Map<ICollection<UserListDto>>(await _userRepository.GetUsersByRole(roleEnum));
         return new UserListResponseDto()
         {

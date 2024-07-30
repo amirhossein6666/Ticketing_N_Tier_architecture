@@ -6,6 +6,8 @@ public class Ticket
 {
     public int Id { get; set; }
 
+    public Guid TrackingNumber { get; set; }
+
     public string Title { get; set; }
 
     public int CreatorId { get; set; }

@@ -28,21 +28,21 @@ public class MessageRepository: IMessageRepository
             .Include(m => m.Ticket)
             .Include(m => m.ParentMessage)
             .Include(m => m.Replies)
-            .FirstOrDefaultAsync(m => m.Id == id);
+            .FirstOrDefaultAsync(m => m.Id == id && !m.IsDeleted);
     }
 
     public async Task<ICollection<Message>> GetMessagesByTicketId(int ticketId)
     {
         return await _appDbContext.Messages
             .Include(m => m.Sender)
-            .Where(m => m.TicketId == ticketId).ToListAsync();
+            .Where(m => m.TicketId == ticketId && !m.IsDeleted).ToListAsync();
     }
 
     public async Task<ICollection<Message>> GetMessagesByUserId(int userId)
     {
         return await _appDbContext.Messages
             .Include(m => m.Sender)
-            .Where(m => m.SenderId == userId).ToListAsync();
+            .Where(m => m.SenderId == userId && !m.IsDeleted).ToListAsync();
     }
 
     public async Task<Message> UpdateMessage(Message message)

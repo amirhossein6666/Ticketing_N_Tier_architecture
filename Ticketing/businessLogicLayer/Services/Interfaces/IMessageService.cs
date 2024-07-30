@@ -10,4 +10,5 @@ public interface IMessageService
     public Task<MessageListResponseDto> GetMessagesByTicketId(int ticketId);
     public Task<MessageListResponseDto> GetMessagesByUserId(int userId);
     public Task<CreateUpdateMessageResponseDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto);
+    public Task<DeleteMessageResponseDto> DeleteMessage(int id);
 }

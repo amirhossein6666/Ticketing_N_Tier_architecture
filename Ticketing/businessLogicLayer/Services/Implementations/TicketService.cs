@@ -3,8 +3,6 @@ using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
-using Ticketing.Dtos.MessageDtos;
-using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
 using Ticketing.Dtos.ResponseDtos.TicketResponseDtos;
 using Ticketing.Dtos.TicketDtos;
 
@@ -13,16 +11,28 @@ namespace Ticketing.businessLogicLayer.Services.Implementations;
 public class TicketService: ITicketService
 {
     private readonly ITicketRepository _ticketRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public TicketService(ITicketRepository ticketRepository, IMapper mapper)
+    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository)
     {
         _ticketRepository = ticketRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     public async Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto)
     {
+        var creator = await _userRepository.GetUserById(ticketInputDto.CreatorId);
+        if (creator is null)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"user with id {ticketInputDto.CreatorId} not found",
+            };
+        }
         var ticket = _mapper.Map<Ticket>(ticketInputDto);
         ticket.Status = Status.Unread;
         try
@@ -129,17 +139,8 @@ public class TicketService: ITicketService
 
     }
 
-    public async Task<SetTicketRatingResponseDto> SetTicketRating(int ticketId, string rating)
+    public async Task<SetTicketRatingResponseDto> SetTicketRating(int ticketId, int rating)
     {
-        if (!Enum.TryParse<Rating>(rating, true, out var ratingEnum))
-        {
-            return new SetTicketRatingResponseDto()
-            {
-                IsSuccess = false,
-                StatusCode = StatusCodes.Status400BadRequest,
-                Message = $"the {rating} is not a valid value for Rating Enum"
-            };
-        }
         var ticket = await _ticketRepository.GetTicketById(ticketId);
         if (ticket is null)
             return new SetTicketRatingResponseDto()
@@ -148,15 +149,59 @@ public class TicketService: ITicketService
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"ticket with id {ticketId} Not found"
             };
-        ticket.Rating = ratingEnum;
+        if (ticket.Rating.HasValue)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"the rating for ticket with id {ticketId} already set"
+            };
+        }
+
+        if (ticket.Status != Status.Open)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"ticket with id {ticketId} is not finished to set rating"
+            };
+        }
+        switch (rating)
+        {
+            case 1:
+                ticket.Rating = Rating.OneStar;
+                break;
+            case 2:
+                ticket.Rating = Rating.TwoStar;
+                break;
+            case 3:
+                ticket.Rating = Rating.ThreeStar;
+                break;
+            case 4:
+                ticket.Rating = Rating.FourStar;
+                break;
+            case 5:
+                ticket.Rating = Rating.FiveStar;
+                break;
+            default:
+                return new SetTicketRatingResponseDto()
+                {
+                    IsSuccess = true,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Invalid Value for Rating enum"
+                };
+        }
         try
         {
+            ticket.Status = Status.Closed;
             var returnedTicket = await _ticketRepository.UpdateTicket(ticket);
             return new SetTicketRatingResponseDto()
             {
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"ticket with id {ticketId} updated",
+                Message = $"set rating for ticket with id {ticketId} done",
                 Data = _mapper.Map<SetTicketRatingDto>(returnedTicket),
             };
         }
@@ -169,6 +214,37 @@ public class TicketService: ITicketService
                 Message = e.ToString()
             };
         }
+    }
 
+    public async Task<DeleteTicketResponseDto> DeleteTicket(int id)
+    {
+        var ticket = await _ticketRepository.GetTicketById(id);
+        if (ticket is null)
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {id} Not found"
+            };
+        ticket.IsDeleted = true;
+        try
+        {
+            await _ticketRepository.UpdateTicket(ticket);
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"ticket with id {id} removed",
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
     }
 }

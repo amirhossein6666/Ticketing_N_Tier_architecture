@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.businessLogicLayer.Tools.CustomExceptions;
 using Ticketing.DataAccessLayer.Entities;
+using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
 using Ticketing.Dtos.MessageDtos;
 using Ticketing.Dtos.ResponseDtos.MessageResponseDtos;
@@ -12,16 +13,64 @@ namespace Ticketing.businessLogicLayer.Services.Implementations;
 public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
+    private readonly ITicketRepository _ticketRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public MessageService(IMessageRepository messageRepository, IMapper mapper, IConfiguration config)
+    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository, IMapper mapper, IConfiguration config)
     {
         _messageRepository = messageRepository;
+        _ticketRepository = ticketRepository;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
     public async Task<CreateUpdateMessageResponseDto> CreateMessage(MessageInputDto messageInputDto)
     {
+        var sender = await _userRepository.GetUserById(messageInputDto.SenderId);
+        if (sender is null)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"user with id {messageInputDto.SenderId} as sender not found"
+            };
+        }
+
+        var ticket = await _ticketRepository.GetTicketById(messageInputDto.TicketId);
+        if (ticket is null)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"ticket with id {messageInputDto.TicketId} not found"
+            };
+        }
+
+        if (sender.Role != Role.Supporter && sender.Id != ticket.CreatorId)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"the user with id {sender.Id} is not allowed to send message in ticket with id {ticket.Id}"
+            };
+        }
+        if (messageInputDto.ParentMessageId.HasValue)
+        {
+            var parentMessage = await _messageRepository.GetMessageById(messageInputDto.ParentMessageId.Value);
+            if (parentMessage is null)
+            {
+                return new CreateUpdateMessageResponseDto()
+                {
+                    IsSuccess = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"message with id {messageInputDto.ParentMessageId} as parent message not found"
+                };
+            }
+        }
         var message = _mapper.Map<Message>(messageInputDto);
         message.SendDate = DateTime.Now;
         try
@@ -115,6 +164,43 @@ public class MessageService : IMessageService
         catch (Exception e)
         {
             return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = e.ToString()
+            };
+        }
+    }
+
+    public async Task<DeleteMessageResponseDto> DeleteMessage(int id)
+    {
+        var message = await _messageRepository.GetMessageById(id);
+        if (message is null)
+            return new DeleteMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"message with id {id} Not found"
+            };
+        message.IsDeleted = true;
+        try
+        {
+            var returnedMessage = await _messageRepository.UpdateMessage(message);
+            foreach (var messageReply in message.Replies)
+            {
+                messageReply.IsDeleted = true;
+                await _messageRepository.UpdateMessage(messageReply);
+            }
+            return new DeleteMessageResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"message with id {id} removed",
+            };
+        }
+        catch (Exception e)
+        {
+            return new DeleteMessageResponseDto()
             {
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest,

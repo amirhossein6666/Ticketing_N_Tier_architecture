@@ -177,12 +177,13 @@ public class TicketService: ITicketService
         }
         try
         {
+            ticket.Status = Status.Closed;
             var returnedTicket = await _ticketRepository.UpdateTicket(ticket);
             return new SetTicketRatingResponseDto()
             {
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"ticket with id {ticketId} updated",
+                Message = $"set rating for ticket with id {ticketId} done",
                 Data = _mapper.Map<SetTicketRatingDto>(returnedTicket),
             };
         }

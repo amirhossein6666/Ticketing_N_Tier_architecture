@@ -2,3 +2,4 @@ add id property to list returned methods of message and ticket
 check for is deleted in returning
 fix updateTicket methods
 set ticket status
+parent message must only for the same ticket

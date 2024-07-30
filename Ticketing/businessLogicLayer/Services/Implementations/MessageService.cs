@@ -137,6 +137,11 @@ public class MessageService : IMessageService
         try
         {
             var returnedMessage = await _messageRepository.UpdateMessage(message);
+            foreach (var messageReply in message.Replies)
+            {
+                messageReply.IsDeleted = true;
+                await _messageRepository.UpdateMessage(messageReply);
+            }
             return new DeleteMessageResponseDto()
             {
                 IsSuccess = true,

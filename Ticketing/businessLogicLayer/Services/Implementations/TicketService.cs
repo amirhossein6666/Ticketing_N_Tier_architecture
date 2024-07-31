@@ -33,6 +33,16 @@ public class TicketService: ITicketService
                 Message = $"user with id {ticketInputDto.CreatorId} not found",
             };
         }
+
+        if (creator.Role != Role.Client)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"user with role {creator.Role} can't create a ticket"
+            };
+        }
         var ticket = _mapper.Map<Ticket>(ticketInputDto);
         ticket.Status = Status.Unread;
         try

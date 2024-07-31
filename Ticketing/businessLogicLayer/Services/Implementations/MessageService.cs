@@ -1,7 +1,5 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Ticketing.businessLogicLayer.Services.Interfaces;
-using Ticketing.businessLogicLayer.Tools.CustomExceptions;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;

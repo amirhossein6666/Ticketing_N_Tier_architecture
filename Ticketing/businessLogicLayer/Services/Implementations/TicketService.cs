@@ -33,6 +33,16 @@ public class TicketService: ITicketService
                 Message = $"user with id {ticketInputDto.CreatorId} not found",
             };
         }
+
+        if (creator.Role != Role.Client)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"user with role {creator.Role} can't create a ticket"
+            };
+        }
         var ticket = _mapper.Map<Ticket>(ticketInputDto);
         ticket.Status = Status.Unread;
         try
@@ -246,5 +256,68 @@ public class TicketService: ITicketService
                 Message = e.ToString()
             };
         }
+    }
+
+    private async Task<FinishTicketResponseDto> FinishTicket(FinishTicketInputDto finishTicketInputDto)
+    {
+        var submitter = await _userRepository.GetUserById(finishTicketInputDto.SubmitterId);
+        if (submitter is null)
+        {
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"user with id {finishTicketInputDto.SubmitterId} as submitter not found"
+            };
+        }
+
+        if (submitter.Role != Role.Supporter)
+        {
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = "this user not allowed to finish the ticket"
+            };
+        }
+        var ticket = await _ticketRepository.GetTicketById(finishTicketInputDto.TicketId);
+        if (ticket is null)
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {finishTicketInputDto.TicketId} Not found"
+            };
+        if (ticket.Status != Status.Answered)
+        {
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"ticket with id {finishTicketInputDto.TicketId} isn't in the state that can be finish"
+            };
+        }
+
+        ticket.Status = Status.Open;
+        try
+        {
+            await _ticketRepository.UpdateTicket(ticket);
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"ticket with id {finishTicketInputDto.TicketId} finished"
+            };
+        }
+        catch (Exception e)
+        {
+            return new FinishTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "something happened in finishing a ticket "
+            };
+        }
+
     }
 }

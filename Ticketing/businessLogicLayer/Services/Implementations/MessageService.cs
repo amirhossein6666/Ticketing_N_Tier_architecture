@@ -1,7 +1,5 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Ticketing.businessLogicLayer.Services.Interfaces;
-using Ticketing.businessLogicLayer.Tools.CustomExceptions;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
@@ -48,7 +46,16 @@ public class MessageService : IMessageService
                 Message = $"ticket with id {messageInputDto.TicketId} not found"
             };
         }
+        if (ticket.Status != Status.Unread && ticket.Status != Status.Answered)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = "sending message is not allowed because of its ticektStatus"
+            };
 
+        }
         if (sender.Role != Role.Supporter && sender.Id != ticket.CreatorId)
         {
             return new CreateUpdateMessageResponseDto()
@@ -70,12 +77,27 @@ public class MessageService : IMessageService
                     Message = $"message with id {messageInputDto.ParentMessageId} as parent message not found"
                 };
             }
+
+            if (parentMessage.TicketId != messageInputDto.TicketId)
+            {
+                return new CreateUpdateMessageResponseDto()
+                {
+                    IsSuccess = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"parent message with id {parentMessage.TicketId} doesn't belong to the this ticket"
+                };
+            }
         }
         var message = _mapper.Map<Message>(messageInputDto);
         message.SendDate = DateTime.Now;
         try
         {
             var returnedMessage = await _messageRepository.CreateMessage(message);
+            if (sender.Role == Role.Supporter)
+            {
+                ticket.Status = Status.Answered;
+                await _ticketRepository.UpdateTicket(ticket);
+            }
             return new CreateUpdateMessageResponseDto()
             {
                 IsSuccess = true,

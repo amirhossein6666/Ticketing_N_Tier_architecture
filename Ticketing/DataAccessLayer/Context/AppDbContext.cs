@@ -58,6 +58,9 @@ public class AppDbContext: DbContext
                 {
                     j.HasKey("TicketId", "UserId");
                 });
+        modelBuilder.Entity<Ticket>()
+            .Property(e => e.TrackingNumber)
+            .HasDefaultValueSql("NEWID()");
 
         base.OnModelCreating(modelBuilder);
 

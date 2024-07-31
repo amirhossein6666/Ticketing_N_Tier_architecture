@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketing.DataAccessLayer.Context;
 
@@ -11,9 +12,11 @@ using Ticketing.DataAccessLayer.Context;
 namespace Ticketing.DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240731112853_Convention")]
+    partial class Convention
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,19 +25,19 @@ namespace Ticketing.DataAccessLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TicketSupporter", b =>
+            modelBuilder.Entity("TicketUser", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<int>("TicketsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("int");
 
-                    b.HasKey("TicketId", "UserId");
+                    b.HasKey("TicketsId", "UsersId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UsersId");
 
-                    b.ToTable("TicketSupporter");
+                    b.ToTable("TicketUser");
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.Message", b =>
@@ -164,17 +167,17 @@ namespace Ticketing.DataAccessLayer.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TicketSupporter", b =>
+            modelBuilder.Entity("TicketUser", b =>
                 {
                     b.HasOne("Ticketing.DataAccessLayer.Entities.Ticket", null)
                         .WithMany()
-                        .HasForeignKey("TicketId")
+                        .HasForeignKey("TicketsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Ticketing.DataAccessLayer.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

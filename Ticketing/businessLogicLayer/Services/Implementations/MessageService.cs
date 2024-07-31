@@ -86,6 +86,8 @@ public class MessageService : IMessageService
         try
         {
             var returnedMessage = await _messageRepository.CreateMessage(message);
+            ticket.Status = Status.Answered;
+            await _ticketRepository.UpdateTicket(ticket);
             return new CreateUpdateMessageResponseDto()
             {
                 IsSuccess = true,

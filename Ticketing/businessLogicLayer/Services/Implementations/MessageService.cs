@@ -48,7 +48,16 @@ public class MessageService : IMessageService
                 Message = $"ticket with id {messageInputDto.TicketId} not found"
             };
         }
+        if (ticket.Status != Status.Unread && ticket.Status != Status.Answered)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = "sending message is not allow because of its ticektStatus"
+            }
 
+        }
         if (sender.Role != Role.Supporter && sender.Id != ticket.CreatorId)
         {
             return new CreateUpdateMessageResponseDto()

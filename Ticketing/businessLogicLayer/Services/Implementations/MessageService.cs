@@ -54,8 +54,8 @@ public class MessageService : IMessageService
             {
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status405MethodNotAllowed,
-                Message = "sending message is not allow because of its ticektStatus"
-            }
+                Message = "sending message is not allowed because of its ticektStatus"
+            };
 
         }
         if (sender.Role != Role.Supporter && sender.Id != ticket.CreatorId)

@@ -70,6 +70,16 @@ public class MessageService : IMessageService
                     Message = $"message with id {messageInputDto.ParentMessageId} as parent message not found"
                 };
             }
+
+            if (parentMessage.TicketId != messageInputDto.TicketId)
+            {
+                return new CreateUpdateMessageResponseDto()
+                {
+                    IsSuccess = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"parent message with id {parentMessage.TicketId} doesn't belong to the this ticket"
+                };
+            }
         }
         var message = _mapper.Map<Message>(messageInputDto);
         message.SendDate = DateTime.Now;

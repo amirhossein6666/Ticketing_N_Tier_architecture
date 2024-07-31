@@ -1,2 +1,3 @@
 set ticket status
 check for Role in all the methods
+check for the status of ticket in create message

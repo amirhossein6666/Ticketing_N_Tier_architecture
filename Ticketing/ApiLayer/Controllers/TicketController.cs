@@ -52,4 +52,10 @@ public class TicketController: ControllerBase
     {
         return Ok(await _ticketService.DeleteTicket(id));
     }
+
+    [HttpPost("/FinishTicket")]
+    public async Task<IActionResult> FinishTicket(FinishTicketInputDto finishTicketInputDto)
+    {
+        return Ok(await _ticketService.FinishTicket(finishTicketInputDto));
+    }
 }

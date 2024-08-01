@@ -258,7 +258,7 @@ public class TicketService: ITicketService
         }
     }
 
-    private async Task<FinishTicketResponseDto> FinishTicket(FinishTicketInputDto finishTicketInputDto)
+    public async Task<FinishTicketResponseDto> FinishTicket(FinishTicketInputDto finishTicketInputDto)
     {
         var submitter = await _userRepository.GetUserById(finishTicketInputDto.SubmitterId);
         if (submitter is null)

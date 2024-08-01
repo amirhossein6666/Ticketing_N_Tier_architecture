@@ -12,4 +12,5 @@ public interface ITicketService
     public Task<CreateUpdateTicketResponseDto> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto);
     public Task<SetTicketRatingResponseDto> SetTicketRating(int ticketId, int rating);
     public Task<DeleteTicketResponseDto> DeleteTicket(int id);
+    public Task<FinishTicketResponseDto> FinishTicket(FinishTicketInputDto finishTicketInputDto);
 }

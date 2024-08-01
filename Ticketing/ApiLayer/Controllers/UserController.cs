@@ -49,6 +49,11 @@ public class UserController : ControllerBase
         return Ok(await _userService.DeleteUser(id));
     }
 
+    [HttpPost("/UserSetRating")]
+    public async Task<IActionResult> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
+    {
+        return Ok(await _userService.UserSetRating(userSetRatingInputDto));
+    }
     [HttpPost("/login")]
     public async Task<IActionResult> Login(LoginInputDto loginInputDto)
     {

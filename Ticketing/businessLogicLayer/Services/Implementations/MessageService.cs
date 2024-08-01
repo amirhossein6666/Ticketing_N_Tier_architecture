@@ -15,7 +15,7 @@ public class MessageService : IMessageService
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository, IMapper mapper, IConfiguration config)
+    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository,IMapper mapper, IConfiguration config)
     {
         _messageRepository = messageRepository;
         _ticketRepository = ticketRepository;
@@ -96,6 +96,12 @@ public class MessageService : IMessageService
             if (sender.Role == Role.Supporter)
             {
                 ticket.Status = Status.Answered;
+                var ticketSupporter = new TicketSupporter()
+                {
+                    TicketId = ticket.Id,
+                    UserId = sender.Id
+                };
+                ticket.TicketSupporters.Add(ticketSupporter);
                 await _ticketRepository.UpdateTicket(ticket);
             }
             return new CreateUpdateMessageResponseDto()

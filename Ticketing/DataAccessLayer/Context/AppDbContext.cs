@@ -41,23 +41,29 @@ public class AppDbContext: DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         // Many-to-Many: Tickets <-> Supporters
-        modelBuilder.Entity<Ticket>()
-            .HasMany(t => t.Supporters)
-            .WithMany(u => u.AnsweredTicket)
-            .UsingEntity<Dictionary<string, object>>(
-                "TicketSupporter",
-                j => j.HasOne<User>()
-                    .WithMany()
-                    .HasForeignKey("UserId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Ticket>()
-                    .WithMany()
-                    .HasForeignKey("TicketId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j =>
-                {
-                    j.HasKey("TicketId", "UserId");
-                });
+        // modelBuilder.Entity<Ticket>()
+        //     .HasMany(t => t.Supporters)
+        //     .WithMany(u => u.AnsweredTicket)
+        //     .UsingEntity<Dictionary<string, object>>(
+        //         "TicketSupporter",
+        //         j => j.HasOne<User>()
+        //             .WithMany()
+        //             .HasForeignKey("UserId")
+        //             .OnDelete(DeleteBehavior.Cascade),
+        //         j => j.HasOne<Ticket>()
+        //             .WithMany()
+        //             .HasForeignKey("TicketId")
+        //             .OnDelete(DeleteBehavior.Cascade),
+        //         j =>
+        //         {
+        //             j.HasKey("TicketId", "UserId");
+        //         });
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.AnsweredTicket)
+            .WithMany(t => t.Supporters)
+            .UsingEntity<TicketSupporter>();
+
         modelBuilder.Entity<Ticket>()
             .Property(e => e.TrackingNumber)
             .HasDefaultValueSql("NEWID()");
@@ -70,4 +76,5 @@ public class AppDbContext: DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<SupporterRating> SupporterRatings { get; set; }
+    public DbSet<TicketSupporter> TicketSupporter { get; set; }
 }

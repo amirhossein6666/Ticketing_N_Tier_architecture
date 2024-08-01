@@ -20,6 +20,7 @@ public class User
     public ICollection<Ticket> CreatedTickets { get; set; }
 
     public ICollection<Ticket> AnsweredTicket { get; set; }
+    public ICollection<TicketSupporter> TicketSupporters { get; set; } = new List<TicketSupporter>();
 
     public ICollection<Message> Messages { get; set; }
 

@@ -252,7 +252,28 @@ public class UserService : IUserService
             };
         }
 
-        if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
+        // if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
+        // {
+        //     return new UserSetRatingResponseDto()
+        //     {
+        //         IsSuccess = false,
+        //         StatusCode = StatusCodes.Status400BadRequest,
+        //         Message = $"this user is not a supporter of this ticket"
+        //     };
+        // }
+        var flag = false;
+        foreach (var ticketSupporter in relatedTicket.Supporters)
+        {
+            Console.WriteLine("FOREACH");
+            if (ticketSupporter.Id == supporter.Id)
+            {
+                Console.WriteLine("HELLO IMMM HEREEE");
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag)
         {
             return new UserSetRatingResponseDto()
             {
@@ -261,7 +282,6 @@ public class UserService : IUserService
                 Message = $"this user is not a supporter of this ticket"
             };
         }
-
         if (relatedTicket.Status is not (Status.Answered or Status.Closed or Status.Open))
         {
             return new UserSetRatingResponseDto()

@@ -15,12 +15,14 @@ namespace Ticketing.businessLogicLayer.Services.Implementations;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
 
-    public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration config)
+    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository, IMapper mapper, IConfiguration config)
     {
         _userRepository = userRepository;
+        _ticketRepository = ticketRepository;
         _mapper = mapper;
         _config = config;
     }
@@ -187,6 +189,119 @@ public class UserService : IUserService
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = e.ToString()
+            };
+        }
+    }
+
+    public async Task<UserSetRatingResponseDto> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
+    {
+        var ratedUser = await _userRepository.GetUserById(userSetRatingInputDto.RatedUserId);
+        if (ratedUser is null)
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"user with id {userSetRatingInputDto.RatedUserId} as Rated User not found"
+            };
+        var supporter = await _userRepository.GetUserById(userSetRatingInputDto.SupporterId);
+        if (supporter is null)
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"user with id {userSetRatingInputDto.SupporterId} as Supporter not found "
+            };
+        var relatedTicket = await _ticketRepository.GetTicketById(userSetRatingInputDto.RelatedTicketId);
+        if (relatedTicket is null)
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"ticket with id {userSetRatingInputDto.RelatedTicketId} not found"
+            };
+        }
+
+        if (supporter.Role != Role.Supporter)
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"user with id {supporter.Id} is not supporter"
+            };
+        }
+
+        if (ratedUser.Role != Role.Client)
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"user with id {ratedUser.Id} is not Client"
+            };
+        }
+
+        if (ratedUser.Id != relatedTicket.CreatorId)
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"user with id {ratedUser.Id} as rated User not allowed to set rating for supporters"
+            };
+        }
+
+        if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = $"this user is not a supporter of this ticket"
+            };
+        }
+
+        if (relatedTicket.Status is not (Status.Answered or Status.Closed or Status.Open))
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message =
+                    $"the status of ticket with id {relatedTicket.Id} is not appropriate for setting rating for its supporters"
+            };
+        }
+
+        if (userSetRatingInputDto.Rating is not (Rating.OneStar or Rating.TwoStar or Rating.ThreeStar or Rating.FourStar or Rating.FiveStar ))
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Invalid value for Rating enum"
+            };
+        }
+
+        try
+        {
+            var supporterRating = _mapper.Map<SupporterRating>(userSetRatingInputDto);
+            supporter.SupporterRatings.Add(supporterRating);
+            await _userRepository.UpdateUser(supporter);
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"set rating for support with id {supporter.Id} for answering ticket {relatedTicket.Id}"
+            };
+        }
+        catch (Exception e)
+        {
+            return new UserSetRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "something happened in setting the rating for supporter"
             };
         }
     }

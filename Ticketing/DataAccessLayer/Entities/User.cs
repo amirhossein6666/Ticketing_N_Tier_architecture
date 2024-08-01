@@ -24,7 +24,7 @@ public class User
 
     public ICollection<Message> Messages { get; set; }
 
-    public ICollection<SupporterRating> SupporterRatings { get; set; }
+    public ICollection<SupporterRating> SupporterRatings { get; set; } = new List<SupporterRating>();
 
     public bool IsDeleted { get; set; } = false;
 }

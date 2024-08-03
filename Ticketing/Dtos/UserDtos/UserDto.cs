@@ -14,6 +14,4 @@ public class UserDto
 
     public ICollection<TicketListDto> AnsweredTicket { get; set; }
 
-    public ICollection<SupporterRating> SupporterRatings { get; set; }
-
 }

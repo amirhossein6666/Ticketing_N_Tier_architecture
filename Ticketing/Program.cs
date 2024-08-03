@@ -44,6 +44,7 @@ builder.Services.AddTransient<ITicketRepository, TicketRepository>();
 builder.Services.AddTransient<ITicketService, TicketService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ISupporterRatingRepository, SupporterRatingRepository>();
 builder.Services.AddControllers();
 // Add services to the container.
 // builder.Services.AddControllers().AddJsonOptions(x =>

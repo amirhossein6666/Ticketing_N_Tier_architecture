@@ -16,13 +16,15 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly ITicketRepository _ticketRepository;
+    private readonly ISupporterRatingRepository _supporterRatingRepository;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
 
-    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository,  IMapper mapper, IConfiguration config)
+    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository, ISupporterRatingRepository supporterRatingRepository,  IMapper mapper, IConfiguration config)
     {
         _userRepository = userRepository;
         _ticketRepository = ticketRepository;
+        _supporterRatingRepository = supporterRatingRepository;
         _mapper = mapper;
         _config = config;
     }
@@ -291,12 +293,12 @@ public class UserService : IUserService
                 RatedUserId = userSetRatingInputDto.RatedUserId,
                 Rating = userSetRatingInputDto.Rating
             };
-            supporter.SupporterRatings.Add(supporterRating);
+            await _supporterRatingRepository.AddRating(supporterRating);
             return new UserSetRatingResponseDto()
             {
                 IsSuccess = true,
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"set rating for support with id {supporter.Id} for answering ticket {relatedTicket.Id}"
+                Message = $"set rating for supporter with id {supporter.Id} for answering ticket {relatedTicket.Id}"
             };
         }
         catch (Exception e)

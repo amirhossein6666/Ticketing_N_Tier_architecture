@@ -76,8 +76,6 @@ namespace Ticketing.DataAccessLayer.Migrations
 
                     b.HasKey("RatedUserId", "RelatedTicketId", "SupporterId");
 
-                    b.HasIndex("RelatedTicketId");
-
                     b.HasIndex("SupporterId");
 
                     b.ToTable("SupporterRatings");
@@ -192,27 +190,11 @@ namespace Ticketing.DataAccessLayer.Migrations
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.SupporterRating", b =>
                 {
-                    b.HasOne("Ticketing.DataAccessLayer.Entities.User", "RatedUser")
-                        .WithMany()
-                        .HasForeignKey("RatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Ticketing.DataAccessLayer.Entities.Ticket", "RelatedTicket")
-                        .WithMany()
-                        .HasForeignKey("RelatedTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Ticketing.DataAccessLayer.Entities.User", "Supporter")
-                        .WithMany()
+                        .WithMany("SupporterRatings")
                         .HasForeignKey("SupporterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("RatedUser");
-
-                    b.Navigation("RelatedTicket");
 
                     b.Navigation("Supporter");
                 });
@@ -260,6 +242,8 @@ namespace Ticketing.DataAccessLayer.Migrations
                     b.Navigation("CreatedTickets");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("SupporterRatings");
 
                     b.Navigation("TicketSupporters");
                 });

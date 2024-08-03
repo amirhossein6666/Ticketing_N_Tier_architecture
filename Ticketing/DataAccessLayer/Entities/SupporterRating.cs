@@ -5,7 +5,7 @@ namespace Ticketing.DataAccessLayer.Entities;
 public class SupporterRating
 {
     public int SupporterId { get; set; }
-    // public User Supporter { get; set; }
+    public User Supporter { get; set; }
 
     public Rating Rating { get; set; }
 

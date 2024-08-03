@@ -253,7 +253,6 @@ public class UserService : IUserService
                 Message = $"user with id {ratedUser.Id} as rated User not allowed to set rating for supporters"
             };
         }
-        // var flag = false;
         if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
         {
             return new UserSetRatingResponseDto()

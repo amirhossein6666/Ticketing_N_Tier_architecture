@@ -149,7 +149,8 @@ public class TicketService: ITicketService
 
     }
 
-    public async Task<SetTicketRatingResponseDto> SetTicketRating(int ticketId, int rating)
+    public async Task<SetTicketRatingResponseDto>
+        SetTicketRating(int creatorId, int ticketId, int rating)
     {
         var ticket = await _ticketRepository.GetTicketById(ticketId);
         if (ticket is null)
@@ -159,6 +160,25 @@ public class TicketService: ITicketService
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"ticket with id {ticketId} Not found"
             };
+        var creator = await _userRepository.GetUserById(creatorId);
+        if (creator is null)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"user not found"
+            };
+        }
+        if (ticket.CreatorId != creatorId)
+        {
+            return new SetTicketRatingResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"user with id {creatorId} is not Creator of this ticket to Set Rating for this "
+            };
+        }
         if (ticket.Rating.HasValue)
         {
             return new SetTicketRatingResponseDto()

@@ -19,7 +19,7 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
 
-    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository, IMapper mapper, IConfiguration config)
+    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository,  IMapper mapper, IConfiguration config)
     {
         _userRepository = userRepository;
         _ticketRepository = ticketRepository;
@@ -251,29 +251,8 @@ public class UserService : IUserService
                 Message = $"user with id {ratedUser.Id} as rated User not allowed to set rating for supporters"
             };
         }
-
-        // if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
-        // {
-        //     return new UserSetRatingResponseDto()
-        //     {
-        //         IsSuccess = false,
-        //         StatusCode = StatusCodes.Status400BadRequest,
-        //         Message = $"this user is not a supporter of this ticket"
-        //     };
-        // }
-        var flag = false;
-        foreach (var ticketSupporter in relatedTicket.Supporters)
-        {
-            Console.WriteLine("FOREACH");
-            if (ticketSupporter.Id == supporter.Id)
-            {
-                Console.WriteLine("HELLO IMMM HEREEE");
-                flag = true;
-                break;
-            }
-        }
-
-        if (!flag)
+        // var flag = false;
+        if (relatedTicket.Supporters.All(u => u.Id != supporter.Id))
         {
             return new UserSetRatingResponseDto()
             {
@@ -305,9 +284,14 @@ public class UserService : IUserService
 
         try
         {
-            var supporterRating = _mapper.Map<SupporterRating>(userSetRatingInputDto);
+            var supporterRating = new SupporterRating()
+            {
+                SupporterId = userSetRatingInputDto.RatedUserId,
+                RelatedTicketId = userSetRatingInputDto.RelatedTicketId,
+                RatedUserId = userSetRatingInputDto.RatedUserId,
+                Rating = userSetRatingInputDto.Rating
+            };
             supporter.SupporterRatings.Add(supporterRating);
-            await _userRepository.UpdateUser(supporter);
             return new UserSetRatingResponseDto()
             {
                 IsSuccess = true,
@@ -321,7 +305,7 @@ public class UserService : IUserService
             {
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = "something happened in setting the rating for supporter"
+                Message = e.ToString()
             };
         }
     }

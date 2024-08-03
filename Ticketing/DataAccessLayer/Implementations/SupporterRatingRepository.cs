@@ -15,7 +15,6 @@ public class SupporterRatingRepository: ISupporterRatingRepository
 
     public async Task<SupporterRating> AddRating(SupporterRating supporterRating)
     {
-        Console.WriteLine("hellooo");
         _appDbContext.SupporterRatings.Add(supporterRating);
         await _appDbContext.SaveChangesAsync();
         return supporterRating;

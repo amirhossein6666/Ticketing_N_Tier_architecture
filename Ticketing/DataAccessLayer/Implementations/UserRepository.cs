@@ -26,7 +26,6 @@ public class UserRepository: IUserRepository
     {
         return await _appDbContext.Users
             .Where(u => u.Id == id && !u.IsDeleted)
-            .Include(u => u.SupporterRatings)
             .Select(u => new User
             {
                 Id = u.Id,

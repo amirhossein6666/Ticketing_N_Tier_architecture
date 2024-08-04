@@ -59,7 +59,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("/UserSetRating")]
+    [HttpPost("UserSetRating")]
     public async Task<IActionResult> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
     {
         userSetRatingInputDto.RatedUserId = GetUserInfo();

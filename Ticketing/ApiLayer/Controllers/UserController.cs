@@ -1,5 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.DataAccessLayer.Enums;
 using Ticketing.Dtos.UserDtos;
 
 namespace Ticketing.ApiLayer.Controllers;
@@ -42,13 +45,11 @@ public class UserController : ControllerBase
     {
         return Ok(await _userService.UpdateUser(updateUserInputDto, id));
     }
-
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         return Ok(await _userService.DeleteUser(id));
     }
-
     [HttpPost("/UserSetRating")]
     public async Task<IActionResult> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
     {
@@ -58,5 +59,21 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Login(LoginInputDto loginInputDto)
     {
         return Ok(await _userService.Login(loginInputDto));
+    }
+
+    private IActionResult GetUserInfo()
+    {
+        var userIdClaim = User.FindFirst("userId")?.Value;
+        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+
+        if (userIdClaim == null || roleClaim == null)
+        {
+            return Unauthorized();
+        }
+
+        var userId = int.Parse(userIdClaim);
+        var role = Enum.Parse<Role>(roleClaim);
+
+        return Ok(new { UserId = userId, Role = role });
     }
 }

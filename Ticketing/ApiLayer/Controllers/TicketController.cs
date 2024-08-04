@@ -16,7 +16,7 @@ public class TicketController: ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateTicket(TicketInputDto ticketInputDto)
     {
-        ticketInputDto.CreatorId = GetUserInfo();
+        ticketInputDto.CreatorId = GetUserInfo().Value;
         return Ok(await _ticketService.CreateTicket(ticketInputDto));
     }
 
@@ -45,7 +45,7 @@ public class TicketController: ControllerBase
     [HttpPost("SetRating/{id:int}")]
     public async Task<IActionResult> SetTicketRating(int id, int rating)
     {
-        var creatorId = GetUserInfo();
+        var creatorId = GetUserInfo().Value;
         return Ok(await _ticketService.SetTicketRating(creatorId, id , rating));
     }
 
@@ -58,18 +58,19 @@ public class TicketController: ControllerBase
     [HttpPost("FinishTicket")]
     public async Task<IActionResult> FinishTicket(FinishTicketInputDto finishTicketInputDto)
     {
-        finishTicketInputDto.SubmitterId = GetUserInfo();
+        finishTicketInputDto.SubmitterId = GetUserInfo().Value;
         return Ok(await _ticketService.FinishTicket(finishTicketInputDto));
     }
 
-    private int GetUserInfo()
+    private ActionResult<int> GetUserInfo()
     {
         var userIdClaim = User.FindFirst("userId")?.Value;
-
+        if (userIdClaim == null)
+        {
+            return Unauthorized();
+        }
         var userId = int.Parse(userIdClaim);
 
         return userId;
     }
-
-
 }

@@ -18,6 +18,7 @@ public class MessageController: ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateMessage(MessageInputDto messageInputDto)
     {
+        messageInputDto.SenderId = GetUserInfo();
         return Ok(await _messageService.CreateMessage(messageInputDto));
     }
 
@@ -49,6 +50,14 @@ public class MessageController: ControllerBase
     public async Task<IActionResult> DeleleMessage(int id)
     {
         return Ok(await _messageService.DeleteMessage(id));
+    }
+    private int GetUserInfo()
+    {
+        var userIdClaim = User.FindFirst("userId")?.Value;
+
+        var userId = int.Parse(userIdClaim);
+
+        return userId;
     }
 
 }

@@ -64,16 +64,14 @@ public class UserController : ControllerBase
     private IActionResult GetUserInfo()
     {
         var userIdClaim = User.FindFirst("userId")?.Value;
-        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
 
-        if (userIdClaim == null || roleClaim == null)
+        if (userIdClaim == null)
         {
             return Unauthorized();
         }
 
         var userId = int.Parse(userIdClaim);
-        var role = Enum.Parse<Role>(roleClaim);
 
-        return Ok(new { UserId = userId, Role = role });
+        return Ok(userId);
     }
 }

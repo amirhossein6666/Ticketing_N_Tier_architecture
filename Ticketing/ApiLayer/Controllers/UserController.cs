@@ -53,6 +53,7 @@ public class UserController : ControllerBase
     [HttpPost("/UserSetRating")]
     public async Task<IActionResult> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
     {
+        userSetRatingInputDto.RatedUserId = GetUserInfo();
         return Ok(await _userService.UserSetRating(userSetRatingInputDto));
     }
     [HttpPost("/login")]
@@ -61,17 +62,12 @@ public class UserController : ControllerBase
         return Ok(await _userService.Login(loginInputDto));
     }
 
-    private IActionResult GetUserInfo()
+    private int GetUserInfo()
     {
         var userIdClaim = User.FindFirst("userId")?.Value;
 
-        if (userIdClaim == null)
-        {
-            return Unauthorized();
-        }
-
         var userId = int.Parse(userIdClaim);
 
-        return Ok(userId);
+        return userId;
     }
 }

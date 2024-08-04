@@ -23,39 +23,49 @@ public class UserController : ControllerBase
         return Ok(await _userService.CreateUser(createUserInputDto));
     }
 
+    [Authorize]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUserById(int id)
     {
         return Ok(await _userService.GetUserById(id));
     }
 
+    [Authorize]
     [HttpGet("GetUserByUsername/username")]
     public async Task<IActionResult> GetUserByUsername(string username)
     {
         return Ok(await _userService.GetUserByUsername(username));
     }
+
+    [Authorize]
     [HttpGet("GetUsersByRole/role")]
     public async Task<IActionResult> GetUsersByRole(string role)
     {
         return Ok(await _userService.GetUsersByRole(role));
     }
 
+    [Authorize]
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> UpdateUser(int id,  UpdateUserInputDto updateUserInputDto)
     {
         return Ok(await _userService.UpdateUser(updateUserInputDto, id));
     }
+
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         return Ok(await _userService.DeleteUser(id));
     }
+
+    [Authorize]
     [HttpPost("/UserSetRating")]
     public async Task<IActionResult> UserSetRating(UserSetRatingInputDto userSetRatingInputDto)
     {
         userSetRatingInputDto.RatedUserId = GetUserInfo();
         return Ok(await _userService.UserSetRating(userSetRatingInputDto));
     }
+
     [HttpPost("/login")]
     public async Task<IActionResult> Login(LoginInputDto loginInputDto)
     {

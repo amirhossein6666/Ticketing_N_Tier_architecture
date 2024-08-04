@@ -17,7 +17,7 @@ public class Ticket
 
     public Status Status { get; set; }
 
-    public ICollection<User> Supporters { get; set; }
+    public ICollection<User> Supporters { get; set; } = new List<User>();
     public ICollection<TicketSupporter> TicketSupporters { get; set; } = new List<TicketSupporter>();
     public ICollection<Message> Messages { get; set; }
 

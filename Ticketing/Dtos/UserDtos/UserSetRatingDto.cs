@@ -1,17 +1,14 @@
 using Ticketing.DataAccessLayer.Enums;
 
-namespace Ticketing.DataAccessLayer.Entities;
+namespace Ticketing.Dtos.UserDtos;
 
-public class SupporterRating
+public class UserSetRatingDto
 {
     public int SupporterId { get; set; }
-    public User Supporter { get; set; }
 
     public Rating Rating { get; set; }
 
     public int RatedUserId { get; set; }
-    // public User RatedUser { get; set; }
 
     public int RelatedTicketId { get; set; }
-    // public Ticket RelatedTicket { get; set; }
 }

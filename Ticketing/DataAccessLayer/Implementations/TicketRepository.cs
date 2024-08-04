@@ -27,6 +27,7 @@ public class TicketRepository : ITicketRepository
             .Include(t => t.Messages)
             .ThenInclude(m => m.Sender)
             .Include(t => t.Creator)
+            .Include(t => t.Supporters)
             .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
     }
 

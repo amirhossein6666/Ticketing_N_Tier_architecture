@@ -40,6 +40,11 @@ public class AppDbContext: DbContext
             .HasForeignKey(t => t.CreatorId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<SupporterRating>()
+            .HasOne(sr => sr.Supporter)
+            .WithMany(u => u.SupporterRatings)
+            .HasForeignKey(sr => sr.SupporterId)
+            .OnDelete(DeleteBehavior.Cascade);
         // Many-to-Many: Tickets <-> Supporters
         // modelBuilder.Entity<Ticket>()
         //     .HasMany(t => t.Supporters)

@@ -42,14 +42,20 @@ public class TicketController: ControllerBase
     }
 
     [HttpPost("SetRating/{id:int}")]
-    public async Task<IActionResult> SetTicketRating(int id, int rating)
+    public async Task<IActionResult> SetTicketRating(int creatorId, int id, int rating)
     {
-        return Ok(await _ticketService.SetTicketRating(id, rating));
+        return Ok(await _ticketService.SetTicketRating(creatorId, id , rating));
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTicket(int id)
     {
         return Ok(await _ticketService.DeleteTicket(id));
+    }
+
+    [HttpPost("/FinishTicket")]
+    public async Task<IActionResult> FinishTicket(FinishTicketInputDto finishTicketInputDto)
+    {
+        return Ok(await _ticketService.FinishTicket(finishTicketInputDto));
     }
 }

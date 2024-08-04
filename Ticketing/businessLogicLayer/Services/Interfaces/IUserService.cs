@@ -13,4 +13,5 @@ public interface IUserService
     public Task<UserListResponseDto> GetUsersByRole(string  role);
     public Task<CreateUpdateUserResponseDto> UpdateUser(UpdateUserInputDto updateUserInputDto, int id);
     public Task<DeleteUserResponseDto> DeleteUser(int id);
+    public Task<UserSetRatingResponseDto> UserSetRating(UserSetRatingInputDto userSetRatingInputDto);
 }

@@ -333,11 +333,11 @@ public class UserService : IUserService
             IsSuccess = true,
             StatusCode = StatusCodes.Status200OK,
             Message = "Ok",
-            Data = GenerateToken(loginInputDto.Username)
+            Data = GenerateToken(loginInputDto.Username, user.Id)
         };
     }
 
-    private string GenerateToken(string username)
+    private string GenerateToken(string username, int userId)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -345,7 +345,8 @@ public class UserService : IUserService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("userId", userId.ToString()),
         };
 
          var token = new JwtSecurityToken(

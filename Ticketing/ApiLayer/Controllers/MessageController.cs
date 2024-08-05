@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.businessLogicLayer.Validators;
 using Ticketing.Dtos.MessageDtos;
 
 namespace Ticketing.ApiLayer.Controllers;
@@ -20,6 +22,13 @@ public class MessageController: ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateMessage(MessageInputDto messageInputDto)
     {
+        MessageInputDtoValidator messageInputDtoValidator = new MessageInputDtoValidator();
+        var validationResult = messageInputDtoValidator.Validate(messageInputDto);
+        if (!validationResult.IsValid)
+        {
+            Console.WriteLine(validationResult.Errors);
+            return Ok(validationResult.Errors);
+        }
         messageInputDto.SenderId = GetUserInfo();
         return Ok(await _messageService.CreateMessage(messageInputDto));
     }

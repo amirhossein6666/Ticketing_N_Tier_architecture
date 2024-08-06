@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ticketing", "Ticketing\Ticketing.csproj", "{36D09197-2C7D-4979-A46D-A9A9B1CE1138}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{3517321E-B51F-42FA-BE43-0260674964C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{36D09197-2C7D-4979-A46D-A9A9B1CE1138}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36D09197-2C7D-4979-A46D-A9A9B1CE1138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36D09197-2C7D-4979-A46D-A9A9B1CE1138}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3517321E-B51F-42FA-BE43-0260674964C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3517321E-B51F-42FA-BE43-0260674964C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3517321E-B51F-42FA-BE43-0260674964C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3517321E-B51F-42FA-BE43-0260674964C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

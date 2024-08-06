@@ -84,7 +84,7 @@ public class MessageService : IMessageService
                 {
                     IsSuccess = false,
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"parent message with id {parentMessage.TicketId} doesn't belong to the this ticket"
+                    Message = $"parent message with id {parentMessage.Id} doesn't belong to the this ticket"
                 };
             }
         }
@@ -96,13 +96,26 @@ public class MessageService : IMessageService
             if (sender.Role == Role.Supporter)
             {
                 ticket.Status = Status.Answered;
-                var ticketSupporter = new TicketSupporter()
+                var flag = false;
+                foreach (var ticketSupporter in ticket.Supporters)
                 {
-                    TicketId = ticket.Id,
-                    UserId = sender.Id
-                };
-                ticket.TicketSupporters.Add(ticketSupporter);
-                await _ticketRepository.UpdateTicket(ticket);
+                    if (ticketSupporter.Id == sender.Id)
+                    {
+                        flag = true;
+                    }
+                }
+
+                if (!flag)
+                {
+                    var ticketSupporter = new TicketSupporter()
+                    {
+                        TicketId = ticket.Id,
+                        UserId = sender.Id
+                    };
+                    ticket.TicketSupporters.Add(ticketSupporter);
+                    await _ticketRepository.UpdateTicket(ticket);
+                }
+
             }
             return new CreateUpdateMessageResponseDto()
             {

@@ -1,5 +1,3 @@
-using Ticketing.DataAccessLayer.Enums;
-
 namespace Ticketing.Dtos.TicketDtos;
 
 public class UpdateTicketInputDto

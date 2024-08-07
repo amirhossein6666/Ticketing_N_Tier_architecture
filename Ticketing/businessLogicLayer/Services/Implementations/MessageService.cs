@@ -15,7 +15,7 @@ public class MessageService : IMessageService
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository,IMapper mapper, IConfiguration config)
+    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository,IMapper mapper)
     {
         _messageRepository = messageRepository;
         _ticketRepository = ticketRepository;

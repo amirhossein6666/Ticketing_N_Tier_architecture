@@ -1,7 +1,6 @@
 using AutoMapper;
 using Moq;
 using Ticketing.businessLogicLayer.Services.Implementations;
-using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;

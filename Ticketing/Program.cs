@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -8,9 +9,11 @@ using Microsoft.OpenApi.Models;
 using Ticketing.businessLogicLayer.Services.Implementations;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
+using Ticketing.businessLogicLayer.Validators.UserValidator;
 using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Implementations;
 using Ticketing.DataAccessLayer.Interfaces;
+using Ticketing.Dtos.UserDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +75,8 @@ builder.Services.AddTransient<ITicketService, TicketService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ISupporterRatingRepository, SupporterRatingRepository>();
+builder.Services.AddTransient<IValidator<CreateUserInputDto>, CreateUserInputDtoValidator>();
+builder.Services.AddTransient<IValidator<UpdateUserInputDto>, UpdateUserInputDtoValidator>();
 builder.Services.AddControllers();
 // Add services to the container.
 // builder.Services.AddControllers().AddJsonOptions(x =>

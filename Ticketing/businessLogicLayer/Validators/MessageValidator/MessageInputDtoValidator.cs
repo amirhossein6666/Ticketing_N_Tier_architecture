@@ -1,7 +1,7 @@
 using FluentValidation;
 using Ticketing.Dtos.MessageDtos;
 
-namespace Ticketing.businessLogicLayer.Validators;
+namespace Ticketing.businessLogicLayer.Validators.MessageValidator;
 
 public class MessageInputDtoValidator: AbstractValidator<MessageInputDto>
 {
@@ -9,6 +9,7 @@ public class MessageInputDtoValidator: AbstractValidator<MessageInputDto>
     {
         RuleFor(m => m.Body)
             .NotEmpty()
-            .WithMessage($"body is required");
+            .WithMessage($"the message body shouldn't be empty");
+
     }
 }

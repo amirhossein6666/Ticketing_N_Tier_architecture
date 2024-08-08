@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
@@ -19,18 +20,33 @@ public class UserService : IUserService
     private readonly ISupporterRatingRepository _supporterRatingRepository;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
+    private readonly IValidator<CreateUserInputDto> _createUserInputDtoValidator;
+    private readonly IValidator<UpdateUserInputDto> _updateUserInputDtoValidator;
 
-    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository, ISupporterRatingRepository supporterRatingRepository,  IMapper mapper, IConfiguration config)
+    public UserService(IUserRepository userRepository, ITicketRepository ticketRepository, ISupporterRatingRepository supporterRatingRepository,  IMapper mapper, IConfiguration config, IValidator<CreateUserInputDto> createUserInputDtoValidator, IValidator<UpdateUserInputDto> updateUserInputDtoValidator)
     {
         _userRepository = userRepository;
         _ticketRepository = ticketRepository;
         _supporterRatingRepository = supporterRatingRepository;
         _mapper = mapper;
         _config = config;
+        _createUserInputDtoValidator = createUserInputDtoValidator;
+        _updateUserInputDtoValidator = updateUserInputDtoValidator;
     }
 
     public async Task<CreateUpdateUserResponseDto> CreateUser(CreateUserInputDto createUserInputDto)
     {
+        var validationResult = await _createUserInputDtoValidator.ValidateAsync(createUserInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
         if (createUserInputDto.Role != Role.Supporter && createUserInputDto.Role != Role.Client)
         {
             return new CreateUpdateUserResponseDto()
@@ -132,6 +148,17 @@ public class UserService : IUserService
 
     public async Task<CreateUpdateUserResponseDto> UpdateUser(UpdateUserInputDto updateUserInputDto, int id)
     {
+        var validationResult = await _updateUserInputDtoValidator.ValidateAsync(updateUserInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateUserResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
         var user = await _userRepository.GetUserById(id);
         if (user is null)
             return new CreateUpdateUserResponseDto()

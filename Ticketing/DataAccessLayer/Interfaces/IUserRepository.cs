@@ -10,4 +10,5 @@ public interface IUserRepository
     public Task<User?> GetUserByUsername(string username);
     public Task<ICollection<User>> GetUsersByRole(Role role);
     public Task<User> UpdateUser(User updatedUser);
+    public Task<bool> UserNameIsUnique(string username);
 }

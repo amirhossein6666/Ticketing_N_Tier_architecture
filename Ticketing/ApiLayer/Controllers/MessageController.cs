@@ -55,7 +55,7 @@ public class MessageController: ControllerBase
 
     [Authorize]
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleleMessage(int id)
+    public async Task<IActionResult> DeleteMessage(int id)
     {
         return Ok(await _messageService.DeleteMessage(id));
     }

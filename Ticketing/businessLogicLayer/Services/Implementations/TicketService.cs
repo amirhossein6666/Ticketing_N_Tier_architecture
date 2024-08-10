@@ -1,5 +1,7 @@
 using AutoMapper;
+using FluentValidation;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.businessLogicLayer.Validators.TicketValidator;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
@@ -8,21 +10,39 @@ using Ticketing.Dtos.TicketDtos;
 
 namespace Ticketing.businessLogicLayer.Services.Implementations;
 
-public class TicketService: ITicketService
+public class TicketService : ITicketService
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly IValidator<TicketInputDto> _ticketInputDtoValidator;
+    private readonly IValidator<UpdateTicketInputDto> _updateTicketInputDtoValidator;
 
-    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository)
+    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository,
+        IValidator<TicketInputDto> ticketInputDtoValidator,
+        IValidator<UpdateTicketInputDto> updateTicketInputDtoValidator)
     {
         _ticketRepository = ticketRepository;
         _mapper = mapper;
         _userRepository = userRepository;
+        _ticketInputDtoValidator = ticketInputDtoValidator;
+        _updateTicketInputDtoValidator = updateTicketInputDtoValidator;
     }
 
     public async Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto)
     {
+        var validationResult = await _ticketInputDtoValidator.ValidateAsync(ticketInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
+
         var creator = await _userRepository.GetUserById(ticketInputDto.CreatorId);
         if (creator is null)
         {
@@ -43,6 +63,7 @@ public class TicketService: ITicketService
                 Message = $"user with role {creator.Role} can't create a ticket"
             };
         }
+
         var ticket = _mapper.Map<Ticket>(ticketInputDto);
         ticket.Status = Status.Unread;
         try
@@ -65,7 +86,6 @@ public class TicketService: ITicketService
                 Message = e.ToString()
             };
         }
-
     }
 
     public async Task<TicketResponseDto> GetTicketById(int id)
@@ -80,6 +100,7 @@ public class TicketService: ITicketService
                 Message = "ticket Not Found"
             };
         }
+
         return new TicketResponseDto()
         {
             IsSuccess = true,
@@ -117,6 +138,18 @@ public class TicketService: ITicketService
 
     public async Task<CreateUpdateTicketResponseDto> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto)
     {
+        var validationResult = await _updateTicketInputDtoValidator.ValidateAsync(updateTicketInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
+
         var ticket = await _ticketRepository.GetTicketById(id);
         if (ticket is null)
             return new CreateUpdateTicketResponseDto()
@@ -146,7 +179,6 @@ public class TicketService: ITicketService
                 Message = e.ToString()
             };
         }
-
     }
 
     public async Task<SetTicketRatingResponseDto>
@@ -170,6 +202,7 @@ public class TicketService: ITicketService
                 Message = $"user not found"
             };
         }
+
         if (ticket.CreatorId != creatorId)
         {
             return new SetTicketRatingResponseDto()
@@ -179,6 +212,7 @@ public class TicketService: ITicketService
                 Message = $"user with id {creatorId} is not Creator of this ticket to Set Rating for this "
             };
         }
+
         if (ticket.Rating.HasValue)
         {
             return new SetTicketRatingResponseDto()
@@ -198,6 +232,7 @@ public class TicketService: ITicketService
                 Message = $"ticket with id {ticketId} is not finished to set rating"
             };
         }
+
         switch (rating)
         {
             case 1:
@@ -223,6 +258,7 @@ public class TicketService: ITicketService
                     Message = $"Invalid Value for Rating enum"
                 };
         }
+
         try
         {
             ticket.Status = Status.Closed;
@@ -300,6 +336,7 @@ public class TicketService: ITicketService
                 Message = "this user not allowed to finish the ticket"
             };
         }
+
         var ticket = await _ticketRepository.GetTicketById(finishTicketInputDto.TicketId);
         if (ticket is null)
             return new FinishTicketResponseDto()
@@ -338,6 +375,5 @@ public class TicketService: ITicketService
                 Message = "something happened in finishing a ticket "
             };
         }
-
     }
 }

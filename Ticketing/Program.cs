@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
@@ -8,9 +10,15 @@ using Microsoft.OpenApi.Models;
 using Ticketing.businessLogicLayer.Services.Implementations;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
+using Ticketing.businessLogicLayer.Validators.MessageValidator;
+using Ticketing.businessLogicLayer.Validators.TicketValidator;
+using Ticketing.businessLogicLayer.Validators.UserValidator;
 using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Implementations;
 using Ticketing.DataAccessLayer.Interfaces;
+using Ticketing.Dtos.MessageDtos;
+using Ticketing.Dtos.TicketDtos;
+using Ticketing.Dtos.UserDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,11 +80,20 @@ builder.Services.AddTransient<ITicketService, TicketService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ISupporterRatingRepository, SupporterRatingRepository>();
+builder.Services.AddTransient<IValidator<CreateUserInputDto>, CreateUserInputDtoValidator>();
+builder.Services.AddTransient<IValidator<UpdateUserInputDto>, UpdateUserInputDtoValidator>();
+builder.Services.AddTransient<IValidator<TicketInputDto>, TicketInputDtoValidator>();
+builder.Services.AddTransient<IValidator<UpdateTicketInputDto>, UpdateTicketInputDtoValidator>();
+builder.Services.AddTransient<IValidator<MessageInputDto>, MessageInputDtoValidator>();
+builder.Services.AddTransient<IValidator<UpdateMessageDto>, UpdateMessageDtoValidator>();
 builder.Services.AddControllers();
 // Add services to the container.
 // builder.Services.AddControllers().AddJsonOptions(x =>
 //     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-
+// builder.Services.Configure<ApiBehaviorOptions>(options =>
+// {
+//     options.SuppressModelStateInvalidFilter = true;
+// });
 //configure mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

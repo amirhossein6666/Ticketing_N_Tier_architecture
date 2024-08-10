@@ -66,4 +66,9 @@ public class UserRepository: IUserRepository
         await _appDbContext.SaveChangesAsync();
         return updatedUser;
     }
+
+    public async Task<bool> UserNameIsUnique(string username)
+    {
+        return !await _appDbContext.Users.AnyAsync(u => u.Username == username);
+    }
 }

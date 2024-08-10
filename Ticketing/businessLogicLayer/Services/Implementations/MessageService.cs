@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
@@ -14,18 +15,32 @@ public class MessageService : IMessageService
     private readonly ITicketRepository _ticketRepository;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-
-    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository,IMapper mapper)
+    private readonly IValidator<MessageInputDto> _messageInputDtoValidator;
+    private readonly IValidator<UpdateMessageDto> _updateMessageDtoValidator;
+    public MessageService(IMessageRepository messageRepository,ITicketRepository ticketRepository, IUserRepository userRepository,IMapper mapper, IValidator<MessageInputDto> messageInputDtoValidator, IValidator<UpdateMessageDto> updateMessageDtoValidator)
     {
         _messageRepository = messageRepository;
         _ticketRepository = ticketRepository;
         _userRepository = userRepository;
         _mapper = mapper;
+        _messageInputDtoValidator = messageInputDtoValidator;
+        _updateMessageDtoValidator = updateMessageDtoValidator;
     }
 
     public async Task<CreateUpdateMessageResponseDto> CreateMessage(MessageInputDto messageInputDto)
     {
-        var sender = await _userRepository.GetUserById(messageInputDto.SenderId);
+        var validationResult = await _messageInputDtoValidator.ValidateAsync(messageInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
+        var sender = await _userRepository.GetUserById(messageInputDto.SenderId.Value);
         if (sender is null)
         {
             return new CreateUpdateMessageResponseDto()
@@ -36,7 +51,7 @@ public class MessageService : IMessageService
             };
         }
 
-        var ticket = await _ticketRepository.GetTicketById(messageInputDto.TicketId);
+        var ticket = await _ticketRepository.GetTicketById(messageInputDto.TicketId.Value);
         if (ticket is null)
         {
             return new CreateUpdateMessageResponseDto()
@@ -182,6 +197,17 @@ public class MessageService : IMessageService
 
     public async Task<CreateUpdateMessageResponseDto> UpdateMessage(int id, UpdateMessageDto updateMessageDto)
     {
+        var validationResult = await _updateMessageDtoValidator.ValidateAsync(updateMessageDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateMessageResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
         var message = await _messageRepository.GetMessageById(id);
         if (message is null)
             return new CreateUpdateMessageResponseDto()

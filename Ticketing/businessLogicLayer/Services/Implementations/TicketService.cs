@@ -1,5 +1,7 @@
 using AutoMapper;
+using FluentValidation;
 using Ticketing.businessLogicLayer.Services.Interfaces;
+using Ticketing.businessLogicLayer.Validators.TicketValidator;
 using Ticketing.DataAccessLayer.Entities;
 using Ticketing.DataAccessLayer.Enums;
 using Ticketing.DataAccessLayer.Interfaces;
@@ -13,16 +15,30 @@ public class TicketService: ITicketService
     private readonly ITicketRepository _ticketRepository;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-
-    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository)
+    private readonly IValidator<TicketInputDto> _ticketInputDtoValidator;
+    private readonly IValidator<UpdateTicketInputDto> _updateTicketInputDtoValidator;
+    public TicketService(ITicketRepository ticketRepository, IMapper mapper, IUserRepository userRepository, IValidator<TicketInputDto> ticketInputDtoValidator, IValidator<UpdateTicketInputDto> updateTicketInputDtoValidator)
     {
         _ticketRepository = ticketRepository;
         _mapper = mapper;
         _userRepository = userRepository;
+        _ticketInputDtoValidator = ticketInputDtoValidator;
+        _updateTicketInputDtoValidator = updateTicketInputDtoValidator;
     }
 
     public async Task<CreateUpdateTicketResponseDto> CreateTicket(TicketInputDto ticketInputDto)
     {
+        var validationResult = await _ticketInputDtoValidator.ValidateAsync(ticketInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
         var creator = await _userRepository.GetUserById(ticketInputDto.CreatorId);
         if (creator is null)
         {
@@ -117,6 +133,17 @@ public class TicketService: ITicketService
 
     public async Task<CreateUpdateTicketResponseDto> UpdateTicket(int id, UpdateTicketInputDto updateTicketInputDto)
     {
+        var validationResult = await _updateTicketInputDtoValidator.ValidateAsync(updateTicketInputDto);
+
+        if (!validationResult.IsValid)
+        {
+            return new CreateUpdateTicketResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            };
+        }
         var ticket = await _ticketRepository.GetTicketById(id);
         if (ticket is null)
             return new CreateUpdateTicketResponseDto()

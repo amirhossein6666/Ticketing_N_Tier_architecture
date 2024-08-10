@@ -11,7 +11,7 @@ public class UpdateUserInputDtoValidator: AbstractValidator<UpdateUserInputDto>
     {
         _userRepository = userRepository;
         RuleFor(u => u.Username)
-            .NotEmpty()
+            .NotEmpty().When(u => u.Username != null)
             .WithMessage("the user name field shouldn't be empty")
             .MustAsync(IsUnique)
             .WithMessage("user name field must be unique")

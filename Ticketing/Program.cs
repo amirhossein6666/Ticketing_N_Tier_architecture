@@ -10,11 +10,13 @@ using Microsoft.OpenApi.Models;
 using Ticketing.businessLogicLayer.Services.Implementations;
 using Ticketing.businessLogicLayer.Services.Interfaces;
 using Ticketing.businessLogicLayer.Tools.AutoMapperProfiles;
+using Ticketing.businessLogicLayer.Validators.MessageValidator;
 using Ticketing.businessLogicLayer.Validators.TicketValidator;
 using Ticketing.businessLogicLayer.Validators.UserValidator;
 using Ticketing.DataAccessLayer.Context;
 using Ticketing.DataAccessLayer.Implementations;
 using Ticketing.DataAccessLayer.Interfaces;
+using Ticketing.Dtos.MessageDtos;
 using Ticketing.Dtos.TicketDtos;
 using Ticketing.Dtos.UserDtos;
 
@@ -82,6 +84,8 @@ builder.Services.AddTransient<IValidator<CreateUserInputDto>, CreateUserInputDto
 builder.Services.AddTransient<IValidator<UpdateUserInputDto>, UpdateUserInputDtoValidator>();
 builder.Services.AddTransient<IValidator<TicketInputDto>, TicketInputDtoValidator>();
 builder.Services.AddTransient<IValidator<UpdateTicketInputDto>, UpdateTicketInputDtoValidator>();
+builder.Services.AddTransient<IValidator<MessageInputDto>, MessageInputDtoValidator>();
+builder.Services.AddTransient<IValidator<UpdateMessageDto>, UpdateMessageDtoValidator>();
 builder.Services.AddControllers();
 // Add services to the container.
 // builder.Services.AddControllers().AddJsonOptions(x =>

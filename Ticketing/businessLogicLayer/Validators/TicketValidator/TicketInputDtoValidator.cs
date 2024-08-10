@@ -8,6 +8,8 @@ public class TicketInputDtoValidator: AbstractValidator<TicketInputDto>
     public TicketInputDtoValidator()
     {
         RuleFor(t => t.Title)
+            .NotNull()
+            .WithMessage("title field is required")
             .NotEmpty()
             .WithMessage("the ticket title shouldn't be empty")
             .Length(5, 50)

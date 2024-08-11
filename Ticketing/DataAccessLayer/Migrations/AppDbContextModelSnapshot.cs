@@ -57,7 +57,7 @@ namespace Ticketing.DataAccessLayer.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.SupporterRating", b =>
@@ -78,7 +78,7 @@ namespace Ticketing.DataAccessLayer.Migrations
 
                     b.HasIndex("SupporterId");
 
-                    b.ToTable("SupporterRatings");
+                    b.ToTable("SupporterRatings", (string)null);
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.Ticket", b =>
@@ -114,7 +114,7 @@ namespace Ticketing.DataAccessLayer.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.TicketSupporter", b =>
@@ -129,7 +129,7 @@ namespace Ticketing.DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TicketSupporter");
+                    b.ToTable("TicketSupporter", (string)null);
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.User", b =>
@@ -159,7 +159,7 @@ namespace Ticketing.DataAccessLayer.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Ticketing.DataAccessLayer.Entities.Message", b =>
